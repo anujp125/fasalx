@@ -1,0 +1,14 @@
+# ==============================================================================
+# FasalX Timeline Service — Production Dependencies
+# Extends base.txt with production-grade server and observability tooling.
+# Install: pip install -r requirements/prod.txt
+# Used in: timeline_service/Dockerfile (production stage)
+# ==============================================================================
+
+-r base.txt
+
+# --- Production Process Manager ---
+gunicorn>=21.2.0           # Multi-worker manager for uvicorn workers
+
+# --- Observability ---
+sentry-sdk[fastapi]>=1.30.0 # Error tracking and performance monitoring

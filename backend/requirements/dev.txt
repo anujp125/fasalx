@@ -1,0 +1,23 @@
+# ==============================================================================
+# FasalX Backend — Development Dependencies
+# Extends base.txt with tooling for local development, testing, and linting.
+# Install: pip install -r requirements/dev.txt
+# ==============================================================================
+
+-r base.txt
+
+# --- Testing ---
+pytest>=7.4.0              # Core test runner
+pytest-asyncio>=0.21.0     # Async test support for FastAPI/Motor
+httpx>=0.25.0              # Used as TestClient transport in FastAPI tests
+anyio>=4.0.0               # Async test backend (required by pytest-asyncio)
+
+# --- Linting & Formatting ---
+ruff>=0.1.0                # Fast Python linter (replaces flake8, isort, pyupgrade)
+black>=23.0.0              # Opinionated code formatter
+
+# --- Type Checking ---
+mypy>=1.5.0                # Static type checker
+
+# --- Dev Utilities ---
+watchfiles>=0.20.0         # Hot-reload for uvicorn in development

@@ -1,0 +1,23 @@
+# ==============================================================================
+# FasalX Timeline Service — Development Dependencies
+# Extends base.txt with local dev tooling, test frameworks, and linters.
+# Install: pip install -r requirements/dev.txt
+# ==============================================================================
+
+-r base.txt
+
+# --- Testing ---
+pytest>=7.4.0              # Test runner
+pytest-asyncio>=0.21.0     # Async test support for arq workers and Motor queries
+httpx>=0.25.0              # Used as TestClient transport in FastAPI endpoint tests
+anyio>=4.0.0               # Async backend for pytest-asyncio
+
+# --- Linting & Formatting ---
+ruff>=0.1.0                # Linter (flake8 + isort + pyupgrade combined)
+black>=23.0.0              # Code formatter
+
+# --- Type Checking ---
+mypy>=1.5.0                # Static type checker
+
+# --- Dev Utilities ---
+watchfiles>=0.20.0         # File watcher for uvicorn --reload

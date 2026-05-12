@@ -1,0 +1,131 @@
+crop_name,season,year,msp_value
+Paddy (Common),Kharif,2021,1940
+Paddy (Common),Kharif,2022,2040
+Paddy (Common),Kharif,2023,2183
+Paddy (Common),Kharif,2024,2300
+Paddy (Common),Kharif,2025,2369
+Paddy (Grade 'A'),Kharif,2021,1960
+Paddy (Grade 'A'),Kharif,2022,2060
+Paddy (Grade 'A'),Kharif,2023,2203
+Paddy (Grade 'A'),Kharif,2024,2320
+Paddy (Grade 'A'),Kharif,2025,2389
+Jowar (Hybrid),Kharif,2021,2738
+Jowar (Hybrid),Kharif,2022,2970
+Jowar (Hybrid),Kharif,2023,3180
+Jowar (Hybrid),Kharif,2024,3371
+Jowar (Hybrid),Kharif,2025,3699
+Jowar (Maldandi),Kharif,2021,2758
+Jowar (Maldandi),Kharif,2022,2990
+Jowar (Maldandi),Kharif,2023,3225
+Jowar (Maldandi),Kharif,2024,3421
+Jowar (Maldandi),Kharif,2025,3749
+Bajra,Kharif,2021,2250
+Bajra,Kharif,2022,2350
+Bajra,Kharif,2023,2500
+Bajra,Kharif,2024,2625
+Bajra,Kharif,2025,2775
+Ragi,Kharif,2021,3377
+Ragi,Kharif,2022,3578
+Ragi,Kharif,2023,3846
+Ragi,Kharif,2024,4290
+Ragi,Kharif,2025,4886
+Maize,Kharif,2021,1870
+Maize,Kharif,2022,1962
+Maize,Kharif,2023,2090
+Maize,Kharif,2024,2225
+Maize,Kharif,2025,2400
+Arhar,Kharif,2021,6300
+Arhar,Kharif,2022,6600
+Arhar,Kharif,2023,7000
+Arhar,Kharif,2024,7550
+Arhar,Kharif,2025,8000
+Moong,Kharif,2021,7275
+Moong,Kharif,2022,7755
+Moong,Kharif,2023,8558
+Moong,Kharif,2024,8682
+Moong,Kharif,2025,8768
+Urad,Kharif,2021,6300
+Urad,Kharif,2022,6600
+Urad,Kharif,2023,6950
+Urad,Kharif,2024,7400
+Urad,Kharif,2025,7800
+Cotton (Medium Staple),Kharif,2021,5726
+Cotton (Medium Staple),Kharif,2022,6080
+Cotton (Medium Staple),Kharif,2023,6620
+Cotton (Medium Staple),Kharif,2024,7121
+Cotton (Medium Staple),Kharif,2025,7710
+Cotton (Long Staple),Kharif,2021,6025
+Cotton (Long Staple),Kharif,2022,6380
+Cotton (Long Staple),Kharif,2023,7020
+Cotton (Long Staple),Kharif,2024,7521
+Cotton (Long Staple),Kharif,2025,8110
+Groundnut,Kharif,2021,5550
+Groundnut,Kharif,2022,5850
+Groundnut,Kharif,2023,6377
+Groundnut,Kharif,2024,6783
+Groundnut,Kharif,2025,7263
+Sunflower Seed,Kharif,2021,6015
+Sunflower Seed,Kharif,2022,6400
+Sunflower Seed,Kharif,2023,6760
+Sunflower Seed,Kharif,2024,7280
+Sunflower Seed,Kharif,2025,7721
+Soyabean,Kharif,2021,3950
+Soyabean,Kharif,2022,4300
+Soyabean,Kharif,2023,4600
+Soyabean,Kharif,2024,4892
+Soyabean,Kharif,2025,5328
+Sesamum,Kharif,2021,7307
+Sesamum,Kharif,2022,7830
+Sesamum,Kharif,2023,8635
+Sesamum,Kharif,2024,9267
+Sesamum,Kharif,2025,9846
+Nigerseed,Kharif,2021,6930
+Nigerseed,Kharif,2022,7287
+Nigerseed,Kharif,2023,7734
+Nigerseed,Kharif,2024,8717
+Nigerseed,Kharif,2025,9537
+Wheat,Rabi,2022,2015
+Wheat,Rabi,2023,2125
+Wheat,Rabi,2024,2275
+Wheat,Rabi,2025,2425
+Wheat,Rabi,2026,2585
+Barley,Rabi,2022,1635
+Barley,Rabi,2023,1735
+Barley,Rabi,2024,1850
+Barley,Rabi,2025,1980
+Barley,Rabi,2026,2150
+Gram,Rabi,2022,5230
+Gram,Rabi,2023,5335
+Gram,Rabi,2024,5440
+Gram,Rabi,2025,5650
+Gram,Rabi,2026,5875
+Masur,Rabi,2022,5500
+Masur,Rabi,2023,6000
+Masur,Rabi,2024,6425
+Masur,Rabi,2025,6700
+Masur,Rabi,2026,7000
+Rapeseed & mustard,Rabi,2022,5050
+Rapeseed & mustard,Rabi,2023,5450
+Rapeseed & mustard,Rabi,2024,5650
+Rapeseed & mustard,Rabi,2025,5950
+Rapeseed & mustard,Rabi,2026,6200
+Safflower,Rabi,2022,5441
+Safflower,Rabi,2023,5650
+Safflower,Rabi,2024,5800
+Safflower,Rabi,2025,5940
+Safflower,Rabi,2026,6540
+Jute,Commercial,2021,4500
+Jute,Commercial,2022,4750
+Jute,Commercial,2023,5050
+Jute,Commercial,2024,5335
+Jute,Commercial,2025,5650
+Copra (milling),Commercial,2022,10590
+Copra (milling),Commercial,2023,10860
+Copra (milling),Commercial,2024,11160
+Copra (milling),Commercial,2025,11582
+Copra (milling),Commercial,2026,12027
+Copra (ball),Commercial,2022,11000
+Copra (ball),Commercial,2023,11750
+Copra (ball),Commercial,2024,12000
+Copra (ball),Commercial,2025,12100
+Copra (ball),Commercial,2026,12500

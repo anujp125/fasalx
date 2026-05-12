@@ -1,0 +1,28 @@
+# ==============================================================================
+# FasalX Timeline Service — Base Dependencies
+# Used by: both dev.txt and prod.txt via "-r base.txt"
+# Install: pip install -r requirements/base.txt
+# ==============================================================================
+
+# --- Web Framework ---
+fastapi>=0.100.0           # Async REST API framework
+
+# --- ASGI Server ---
+uvicorn[standard]>=0.23.0  # ASGI server (standard = includes websockets, lifespan)
+
+# --- Database ---
+motor>=3.3.0               # Async MongoDB driver (Motor wraps PyMongo for asyncio)
+
+# --- Caching / Job Queue ---
+redis>=5.0.0               # Async Redis client
+arq>=0.25.0                # Async Redis-backed task queue & cron scheduler (background GDD jobs)
+
+# --- Configuration ---
+pydantic>=2.4.0            # Data validation (Milestone, Timeline, EnvironmentalSnapshot models)
+pydantic-settings>=2.0.0   # .env file loading for BaseSettings
+
+# --- HTTP Client ---
+httpx>=0.25.0              # Async HTTP client (Open-Meteo API calls, Auth Service mesh calls)
+
+# --- Utilities ---
+python-dotenv>=1.0.0       # Loads .env files into os.environ

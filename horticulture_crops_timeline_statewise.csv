@@ -1,0 +1,62 @@
+crop_name,season,state,sowing,transplanting,harvesting
+Onion,Kharif,Karnataka,Last week of May-Sept,Last week of May-Sept,Aug-Dec
+Onion,Kharif,Maharashtra,May-Jun,Jul-14 Sept,15 Oct -Dec
+Onion,Kharif,Rajasthan,Jan-Feb,Aug-Sept,Nov-Jan
+Onion,Kharif,Andhra Pradesh,Jun-Aug,Jun-Sept,Aug-Nov
+Onion,Kharif,Tamil Nadu,Apr-Sept,Nil,Jul-Nov
+Onion,Kharif,Uttar Pradesh,July-Aug,Aug-Sept,Nov-Dec
+Onion,Kharif,Haryana,July,Aug-Sept,Nov-Dec
+Onion,Kharif,Madhya Pradesh,Jun-July,15 July-Sept,Nov-Dec
+Onion,Kharif,Gujarat,Jun-July,Aug-Sept,Oct-Nov
+Onion,Kharif,Telangana,May-July,Jun-10 Sept,Oct-Dec
+Onion,Late Kharif,Maharashtra,Aug-Sept,Sept-Nov,Jan-Mar
+Onion,Late Kharif,Madhya Pradesh,July-Aug,15 Aug-Oct,Jan-Feb
+Onion,Late Kharif,Gujarat,Aug-Sept,Oct-Nov,Jan-Feb
+Onion,Late Kharif,Andhra Pradesh,Sept-Oct,Oct-Nov,Dec-Jan
+Onion,Late Kharif,Telangana,Sept-Oct,Oct-Nov,Jan-Feb
+Onion,Rabi,Maharashtra,Oct-Nov,15 Nov-Feb,April-May
+Onion,Rabi,Madhya Pradesh,Oct-Nov,Nov-Feb,Mar-May
+Onion,Rabi,Karnataka,Oct-Feb,,Jan-Apr
+Onion,Rabi,Bihar,Oct-Nov,Dec-Jan,April-May
+Onion,Rabi,Rajasthan,Oct-Nov,Dec-Jan,Mar-May
+Onion,Rabi,Gujarat,Oct end-Nov,Dec-Jan,Mar-May
+Onion,Rabi,Andhra Pradesh,Oct-Jan,Nov-Feb,Jan-Apr
+Onion,Rabi,Haryana,Oct-Nov,Mid Nov-Mid Jan,Mar-Apr
+Onion,Rabi,Uttar Pradesh,Oct-Nov,Nov-Feb,Apr-May
+Onion,Rabi,Telangana,Nov-Dec,Dec-Jan,Mar-May
+Onion,Rabi,Tamil Nadu,Oct- Mar,Nil,Dec-May
+Potato,Kharif,Uttarakhand,Feb-Mar,,May-Sept
+Potato,Kharif,Karnataka,Jun-Aug,,Aug-Nov
+Potato,Kharif,Himachal Pradesh,May-Jun,,Sept-Oct
+Potato,Kharif,Maharashtra,Jun-July,,Sept-Oct
+Potato,Kharif,Tamil Nadu,Apr-Sept,,Aug-Jan
+Potato,Rabi,Uttar Pradesh,Oct-15 Dec,,Dec end-Mar
+Potato,Rabi,West Bengal,Nov-Jan,,Jan-April
+Potato,Rabi,Bihar,Nov-Dec,,Jan-Mar
+Potato,Rabi,Gujarat,Oct end - Dec,,Jan end - Mar
+Potato,Rabi,Madhya Pradesh,Oct-Nov,,Feb-15 Mar
+Potato,Rabi,Punjab,Sept-Jan,,Nov-Apr
+Potato,Rabi,Haryana,Sept-Dec,,Dec-Mar
+Tomato,Kharif,Andhra Pradesh,May-Sept,Jun-Sept,Nov-Jan
+Tomato,Kharif,Madhya Pradesh,15 Jun -15 Aug,July-15 Oct,Oct-Feb
+Tomato,Kharif,Karnataka,Jun-Sept,Jun-Sept,July last week-Jan
+Tomato,Kharif,Gujarat,Jun-July,Aug-Sept,Oct-Dec
+Tomato,Kharif,Maharashtra,May-Jun,Jun-Sept,Aug-Dec
+Tomato,Kharif,Telangana,May-Aug,Jun-Sept,July-Dec
+Tomato,Kharif,Uttar Pradesh,Mid Jun-Aug,July-Sept,Oct-Jan
+Tomato,Kharif,Tamil Nadu,Apr-Sept,,Jun-Jan
+Tomato,Kharif,Chhattisgarh,Jun-Sept,Jun-Oct,Aug-Jan
+Tomato,Kharif,Himachal Pradesh,Feb-Jun,Mar-Jun,Jun-Oct
+Tomato,Kharif,Uttarakhand,Feb-Mar,Mar-Apr,May-July
+Tomato,Kharif,Odisha,Jun-Aug,July-Sept,Oct-Dec
+Tomato,Rabi,Andhra Pradesh,Oct-Jan,Nov-Feb,Feb-May
+Tomato,Rabi,Madhya Pradesh,Oct-Jan,Nov-Mar,Mar-Jun
+Tomato,Rabi,Karnataka,Oct-Jan,Nov-Feb,Feb-May
+Tomato,Rabi,Gujarat,Aug end-Oct,Oct-Nov,Jan-May
+Tomato,Rabi,Maharashtra,Oct-Nov,15 Nov-Feb,April-May
+Tomato,Rabi,Telangana,Nov-Mar,Dec-Apr,Feb-July
+Tomato,Rabi,Haryana,Oct-Feb,Nov-Mar,Mar-Jun
+Tomato,Rabi,Uttar Pradesh,Oct-Dec,Nov-Feb,Feb-May
+Tomato,Rabi,Tamil Nadu,Oct-Mar,Nov-Apr,Dec-Jun
+Tomato,Rabi,West Bengal,Aug-Feb,Sept-Jan,Nov-April
+Tomato,Rabi,Bihar,Sept-Nov,Oct-Dec,Jan-April

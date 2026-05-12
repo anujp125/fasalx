@@ -1,0 +1,31 @@
+# ==============================================================================
+# FasalX Backend — Base Dependencies
+# Used by: both dev.txt and prod.txt via "-r base.txt"
+# Install: pip install -r requirements/base.txt
+# ==============================================================================
+
+# --- Web Framework ---
+fastapi>=0.100.0           # High-performance async web framework
+uvicorn[standard]>=0.23.0  # ASGI server with websocket support
+
+# --- Database ---
+motor>=3.3.0               # Async MongoDB driver (wraps PyMongo for asyncio)
+
+# --- Caching / Message Broker ---
+redis>=5.0.0               # Async-compatible Redis client
+
+# --- Configuration ---
+pydantic>=2.4.0            # Data validation and settings management
+pydantic-settings>=2.0.0   # .env file loading for pydantic BaseSettings
+
+# --- Auth ---
+firebase-admin>=6.2.0      # Firebase Admin SDK (token verification, Firestore, Auth)
+
+# --- HTTP Client ---
+google-genai>=2.0.0        # Google GenAI SDK (Gemini API client)
+httpx>=0.25.0              # Async HTTP client (external API calls: Open-Meteo, Data.gov.in)
+python-multipart>=0.0.9    # Multipart form parsing for image upload endpoints
+
+# --- Utilities ---
+python-dotenv>=1.0.0       # Loads .env files into os.environ (dev convenience)
+geopy>=2.4.0               # Geocoding library (Nominatim, reverse geocoding)

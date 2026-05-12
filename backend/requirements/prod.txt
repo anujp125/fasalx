@@ -1,0 +1,15 @@
+# ==============================================================================
+# FasalX Backend — Production Dependencies
+# Extends base.txt with production-grade server and observability tooling.
+# Install: pip install -r requirements/prod.txt
+# Used in: backend/Dockerfile (production stage)
+# ==============================================================================
+
+-r base.txt
+
+# --- Production ASGI Server ---
+gunicorn>=21.2.0           # Multi-worker process manager for uvicorn workers
+                           # Usage: gunicorn app.main:app -k uvicorn.workers.UvicornWorker
+
+# --- Observability ---
+sentry-sdk[fastapi]>=1.30.0 # Error tracking and performance monitoring (Sentry)

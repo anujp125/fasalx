@@ -1,0 +1,28 @@
+apiVersion: antigravity.google.com/v1alpha1
+kind: Microservice
+metadata:
+  name: fasalx-timeline-service
+  namespace: fasalx-prod
+spec:
+  replicas: 3
+  image: gcr.io/fasalx-prod/timeline-service:latest
+  ports:
+    - containerPort: 8001
+      protocol: TCP
+  serviceMesh:
+    enabled: true
+    upstreamServices:
+      - name: fasalx-auth
+        port: 8000
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+  scaling:
+    autoScale: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70

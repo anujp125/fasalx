@@ -1,0 +1,22 @@
+name: Refresh MSP Data
+
+on:
+  schedule:
+    - cron: "0 3 15 12 *"
+  workflow_dispatch:
+
+jobs:
+  refresh-msp:
+    runs-on: ubuntu-latest
+    env:
+      MONGO_URL: ${{ secrets.MONGO_URL }}
+      MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install migration dependencies
+        run: python -m pip install motor pydantic-settings
+      - name: Upsert latest government MSP filing data
+        run: python scripts/migrate_msp.py --refresh-latest

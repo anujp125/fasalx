@@ -1,0 +1,233 @@
+# ==============================================================================
+# FasalX — Docker Compose (Local Development)
+# ==============================================================================
+# Spins up the full FasalX microservices stack locally.
+#
+# Services:
+#   fasalx-auth       → Backend API (FastAPI, port 8000)
+#   fasalx-timeline   → Timeline Microservice (FastAPI, port 8001)
+#   fasalx-worker     → Arq Background Worker (shares timeline image)
+#   redis             → Redis (job queue + caching, port 6379)
+#   mongodb           → MongoDB (local fallback, port 27017)
+#
+# Usage:
+#   docker-compose up --build         # Build and start all services
+#   docker-compose up fasalx-auth     # Start only the backend
+#   docker-compose logs -f fasalx-worker  # Tail worker logs
+# ==============================================================================
+
+version: '3.9'
+
+# ---------------------------------------------------------------------------
+# Shared environment defaults (DRY)
+# Each service can override any variable in its own `environment:` block.
+# ---------------------------------------------------------------------------
+x-common-env: &common-env
+  ENVIRONMENT: development
+  MONGO_URL: mongodb://mongodb:27017
+  MONGO_DB_NAME: fasalx
+  REDIS_URL: redis://redis:6379/0
+  ML_SERVICE_URL: http://ml-service:8003
+
+services:
+
+  # --------------------------------------------------------------------------
+  # fasalx-auth — Backend / Auth Microservice
+  # Handles: Firebase JWT verification, User management, Mandi prices, Weather
+  # Port: 8000
+  # --------------------------------------------------------------------------
+  fasalx-auth:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fasalx_auth
+    env_file:
+      - ./backend/.env          # Override with real secrets (not committed)
+    environment:
+      <<: *common-env
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - mongodb
+      - ml-service
+    restart: unless-stopped
+    # Override CMD for dev (auto-reload + single uvicorn worker)
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+
+  # --------------------------------------------------------------------------
+  # ml-service - Internal Crop Disease Inference Helper
+  # Handles: TensorFlow model loading and cached inference for recommendation-engine
+  # Internal port: 8003
+  # --------------------------------------------------------------------------
+  ml-service:
+    build:
+      context: ./ML_fasalX
+      dockerfile: Dockerfile
+    container_name: fasalx_ml_service
+    environment:
+      ML_ENVIRONMENT: development
+      ML_MODELS_DIR: /models/models
+      ML_MAX_UPLOAD_BYTES: 8388608
+      ML_WARMUP_ON_STARTUP: "true"
+      ML_WARMUP_ALL_MODELS: "false"
+      ML_WARMUP_MODELS: tomato,potato
+      ML_LOG_LEVEL: INFO
+    volumes:
+      - ./ML_fasalX/models:/models:ro
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # recommendation-engine - Recommendation / Field Intelligence Microservice
+  # Handles: Field intelligence, crop recommendations, disease inference proxy
+  # Port: 8002
+  # --------------------------------------------------------------------------
+  recommendation-engine:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fasalx_recommendation_engine
+    env_file:
+      - ./backend/.env
+    environment:
+      <<: *common-env
+      ENVIRONMENT: development
+    ports:
+      - "8002:8002"
+    depends_on:
+      - redis
+      - mongodb
+      - ml-service
+    restart: unless-stopped
+    command: >
+      uvicorn app.recommendation_main:app
+      --host 0.0.0.0
+      --port 8002
+      --reload
+
+  # --------------------------------------------------------------------------
+  # fasalx-timeline — Timeline Microservice (HTTP Layer)
+  # Handles: Crop timeline CRUD, on-demand GDD recalculation endpoints
+  # Port: 8001
+  # --------------------------------------------------------------------------
+  fasalx-timeline:
+    build:
+      context: ./timeline_service
+      dockerfile: Dockerfile
+    container_name: fasalx_timeline
+    env_file:
+      - ./timeline_service/.env  # Override with real secrets
+    environment:
+      <<: *common-env
+      ENVIRONMENT: development
+      AUTH_SERVICE_URL: http://fasalx-auth:8000
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis
+      - mongodb
+      - fasalx-auth
+    restart: unless-stopped
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8001
+      --reload
+
+  # --------------------------------------------------------------------------
+  # fasalx-worker — Arq Background Worker
+  # Shares the same image as fasalx-timeline but runs the Arq worker process.
+  # Responsibilities:
+  #   - Daily GDD accumulation cron (21:30 UTC / 03:00 IST)
+  #   - On-demand GDD recalculation jobs enqueued by the timeline API
+  # --------------------------------------------------------------------------
+  fasalx-worker:
+    build:
+      context: ./timeline_service
+      dockerfile: Dockerfile
+    container_name: fasalx_worker
+    env_file:
+      - ./timeline_service/.env
+    environment:
+      <<: *common-env
+      ENVIRONMENT: development
+      AUTH_SERVICE_URL: http://fasalx-auth:8000
+    depends_on:
+      - redis
+      - mongodb
+    restart: unless-stopped
+    # Override the default CMD (gunicorn) to run the Arq worker instead
+    command: python -m arq app.worker.tasks.WorkerSettings
+
+  # --------------------------------------------------------------------------
+  # fasalx-frontend — Flutter Web Client (Development)
+  # Serves the Flutter app locally on port 8080 with hot-restart capabilities.
+  # --------------------------------------------------------------------------
+  fasalx-frontend:
+    image: ghcr.io/cirruslabs/flutter:stable
+    container_name: fasalx_frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend_client:/app
+    working_dir: /app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: >
+      sh -c "git config --global --add safe.directory /app &&
+             flutter pub get &&
+             flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0"
+    restart: unless-stopped
+    depends_on:
+      - fasalx-auth
+
+  # --------------------------------------------------------------------------
+  # redis — Redis (Caching + Job Queue)
+  # Used by:
+  #   - fasalx-auth: Mandi price cache, weather cache
+  #   - fasalx-timeline: JWT token cache (5-min TTL)
+  #   - fasalx-worker: Arq job broker
+  # --------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: fasalx_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --------------------------------------------------------------------------
+  # mongodb — MongoDB (Local Dev Fallback)
+  # For production, MongoDB Atlas is used. This container is for local dev only.
+  # Connection string: mongodb://mongodb:27017 (resolved via Docker DNS)
+  # --------------------------------------------------------------------------
+  mongodb:
+    image: mongo:6.0
+    container_name: fasalx_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  redis_data:
+    driver: local
+  mongo_data:
+    driver: local

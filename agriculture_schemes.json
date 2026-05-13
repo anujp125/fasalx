@@ -1,0 +1,164 @@
+[
+  {
+    "scheme_name": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
+    "scheme_type": "Central Government Scheme",
+    "benefits": "Farmers receive ₹6,000 annually in 3 equal installments directly into their bank account. The amount helps farmers purchase seeds, fertilizers, pesticides, irrigation supplies, and other agricultural necessities while reducing dependency on local money lenders.",
+    "description": "PM-KISAN is a Direct Benefit Transfer (DBT) income support scheme launched by the Government of India to provide financial stability to farmers and improve agricultural productivity.",
+    "eligibility_criteria": "Applicant must be an Indian citizen owning cultivable agricultural land recorded in government land records. Institutional landholders, income tax payers, serving/retired government officers, and professionals like doctors, engineers, and lawyers are excluded.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Bank passbook",
+      "Land ownership documents",
+      "Mobile number",
+      "Residence proof"
+    ],
+    "status": "Active",
+    "direct_link": "https://pmkisan.gov.in",
+    "type": "Income Support"
+  },
+  {
+    "scheme_name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    "scheme_type": "Central Government Scheme",
+    "benefits": "Farmers get insurance protection against crop loss due to droughts, floods, cyclones, heavy rainfall, pests, and diseases. Premium rates are very low and most of the premium is paid by the government.",
+    "description": "PMFBY is a nationwide crop insurance scheme designed to protect farmers from financial losses caused by natural disasters and crop failures while ensuring agricultural continuity.",
+    "eligibility_criteria": "All farmers growing notified crops in notified areas are eligible, including owner cultivators, tenant farmers, and sharecroppers. Both loanee and non-loanee farmers can apply.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Land records",
+      "Sowing certificate",
+      "Bank account details",
+      "Crop details"
+    ],
+    "status": "Active",
+    "direct_link": "https://pmfby.gov.in",
+    "type": "Crop Insurance"
+  },
+  {
+    "scheme_name": "Kisan Credit Card (KCC)",
+    "scheme_type": "Central Government Scheme",
+    "benefits": "Provides low-interest loans for farming activities, dairy, fisheries, and allied sectors. Includes flexible repayment periods and accidental insurance coverage in some banks.",
+    "description": "KCC is a banking credit support scheme aimed at providing timely and affordable agricultural loans to farmers without complicated loan procedures.",
+    "eligibility_criteria": "Farmers engaged in crop cultivation, dairy farming, poultry, fisheries, or allied agricultural activities. Tenant farmers, oral lessees, SHGs, and FPOs can also apply depending on bank norms.",
+    "documents_required": [
+      "Aadhaar Card",
+      "PAN Card",
+      "Passport-size photographs",
+      "Land documents",
+      "Bank account details"
+    ],
+    "status": "Active",
+    "direct_link": "https://www.myscheme.gov.in/schemes/kcc",
+    "type": "Loans & Credit"
+  },
+  {
+    "scheme_name": "PM Krishi Sinchai Yojana (PMKSY)",
+    "scheme_type": "Central Government Scheme",
+    "benefits": "Provides subsidies for drip irrigation, sprinkler systems, water-saving equipment, and irrigation infrastructure to improve water efficiency and crop yield.",
+    "description": "PMKSY aims to ensure irrigation access to every farm under the “Har Khet Ko Pani” initiative and promote efficient water management practices.",
+    "eligibility_criteria": "Farmers, farmer groups, cooperatives, SHGs, trusts, and FPOs owning or leasing cultivable land with access to irrigation sources are eligible.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Land proof",
+      "Bank details",
+      "Irrigation source details"
+    ],
+    "status": "Active",
+    "direct_link": "https://pmksy.gov.in",
+    "type": "Irrigation"
+  },
+  {
+    "scheme_name": "Soil Health Card Scheme",
+    "scheme_type": "Central Government Scheme",
+    "benefits": "Free soil testing and scientific recommendations for fertilizer and nutrient usage, helping improve crop quality and reduce unnecessary fertilizer expenses.",
+    "description": "Government initiative that analyzes soil samples and provides farmers with customized soil health reports and nutrient recommendations.",
+    "eligibility_criteria": "Any farmer engaged in agricultural activities on owned or leased agricultural land can apply.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Land records",
+      "Farmer registration details"
+    ],
+    "status": "Active",
+    "direct_link": "https://soilhealth.dac.gov.in",
+    "type": "Soil & Fertility"
+  },
+  {
+    "scheme_name": "e-NAM (National Agriculture Market)",
+    "scheme_type": "Central Government Scheme",
+    "benefits": "Farmers can sell crops online to buyers across India, helping them obtain better prices and reducing dependence on intermediaries and local traders.",
+    "description": "e-NAM is a digital agricultural trading platform integrating mandis/APMCs into a unified national market system.",
+    "eligibility_criteria": "Farmers, traders, FPOs, commission agents, and cooperatives registered with participating mandis are eligible.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Bank account",
+      "Mobile number",
+      "Mandi registration details"
+    ],
+    "status": "Active",
+    "direct_link": "https://www.enam.gov.in",
+    "type": "Market & Trading"
+  },
+  {
+    "scheme_name": "PM Kisan Maandhan Yojana",
+    "scheme_type": "Central Government Scheme",
+    "benefits": "Eligible farmers receive a guaranteed monthly pension of ₹3,000 after the age of 60, ensuring financial support during old age.",
+    "description": "Pension and social security scheme launched to provide retirement benefits to small and marginal farmers.",
+    "eligibility_criteria": "Small and marginal farmers aged 18–40 years owning up to 2 hectares of land and not covered under EPFO, ESIC, or NPS.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Bank account details",
+      "Land records",
+      "Mobile number"
+    ],
+    "status": "Active",
+    "direct_link": "https://maandhan.in",
+    "type": "Pension & Welfare"
+  },
+  {
+    "scheme_name": "PM-KUSUM Scheme",
+    "scheme_type": "Central Government Scheme",
+    "benefits": "Subsidies for solar pumps and solar power plants help reduce electricity bills and generate additional income through solar energy production.",
+    "description": "Renewable energy initiative promoting solar adoption in agriculture to reduce dependence on diesel and grid electricity.",
+    "eligibility_criteria": "Farmers, FPOs, cooperatives, panchayats, and water user associations with suitable agricultural land are eligible.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Land documents",
+      "Electricity connection proof",
+      "Bank details"
+    ],
+    "status": "Active",
+    "direct_link": "https://pmkusum.mnre.gov.in",
+    "type": "Solar & Energy"
+  },
+  {
+    "scheme_name": "Rythu Bandhu Scheme",
+    "scheme_type": "State Government Scheme - Telangana",
+    "benefits": "Provides seasonal investment support directly to farmers before every crop season for purchasing seeds, fertilizers, pesticides, and other farming inputs.",
+    "description": "Telangana government farmer welfare scheme providing financial investment assistance to land-owning farmers.",
+    "eligibility_criteria": "Farmers owning agricultural land in Telangana with valid pattadar/passbook records are eligible. Tenant farmers are generally excluded.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Pattadar passbook",
+      "Bank account details",
+      "Land ownership proof"
+    ],
+    "status": "Active",
+    "direct_link": "https://rythubandhu.telangana.gov.in",
+    "type": "Income Support"
+  },
+  {
+    "scheme_name": "KALIA (Krushak Assistance for Livelihood and Income Augmentation)",
+    "scheme_type": "State Government Scheme - Odisha",
+    "benefits": "Provides financial aid, crop loans, insurance support, and livelihood assistance to small farmers and landless agricultural workers.",
+    "description": "Odisha government welfare scheme aimed at improving farmer income security and reducing rural poverty.",
+    "eligibility_criteria": "Small and marginal farmers, sharecroppers, cultivators, and landless agricultural laborers residing in Odisha are eligible.",
+    "documents_required": [
+      "Aadhaar Card",
+      "Bank details",
+      "Land proof",
+      "Residence proof"
+    ],
+    "status": "Active",
+    "direct_link": "https://kalia.odisha.gov.in",
+    "type": "Farmer Welfare"
+  }
+]

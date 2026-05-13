@@ -15,8 +15,7 @@ async def import_schemes():
     with open('../agriculture_schemes.json', 'r', encoding='utf-8') as f:
         schemes_data = json.load(f)
 
-    import certifi
-    client = AsyncIOMotorClient(settings.MONGO_URL, tlsCAFile=certifi.where())
+    client = AsyncIOMotorClient('mongodb://localhost:27017')
     db = client[settings.MONGO_DB_NAME]
     
     collection = db.schemes
@@ -37,8 +36,8 @@ async def import_schemes():
         elif 'state' in scheme_type:
             scheme_type = 'state'
             
+        scheme_id = str(uuid.uuid4())
         doc = {
-            "_id": scheme_id,
             "title_en": scheme.get('scheme_name', ''),
             "title_hi": "",  # no hindi in json
             "description_en": scheme.get('description', '') + "\n\nBenefits: " + scheme.get('benefits', ''),
@@ -52,14 +51,19 @@ async def import_schemes():
             "scheme_type": scheme_type,
             "state_name": "", # Would need mapping if there are state schemes
             "is_active": is_active,
-            "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat()
         }
         
         # Upsert by title_en to avoid duplicates
         await collection.update_one(
             {"title_en": doc["title_en"]},
-            {"$set": doc},
+            {
+                "$set": doc,
+                "$setOnInsert": {
+                    "_id": scheme_id,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                }
+            },
             upsert=True
         )
         count += 1

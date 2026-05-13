@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin Panel | FasalX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <!-- Firebase JS SDK (compat build — works with module-less HTML pages) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script>
+    // ── Firebase project config ──────────────────────────────────────────────
+    // Project: fasalx-197fc  |  Only public-safe keys go here.
+    const _FIREBASE_CONFIG = {
+      apiKey:            "AIzaSyBRpcux8dgXeXe-K0rzzADfQVRlbH1fFg8",
+      authDomain:        "fasalx-197fc.firebaseapp.com",
+      projectId:         "fasalx-197fc",
+      storageBucket:     "fasalx-197fc.appspot.com",
+      messagingSenderId: "375241583267",
+      appId:             "1:115733748109:android:18de94469ea454c87d45c4"
+    };
+    firebase.initializeApp(_FIREBASE_CONFIG);
+  </script>
+
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --leaf:#2f7d32;--ll:#4caf50;--sage:#4a7a4a;--wheat:#d4a854;
+      --sky:#eef5ee;--mist:#f5f7f3;--cream:#f5f7f3;--dark:#172118;
+      --mid:#56615a;--light:#5b665c;--bd:#dfe8dc;
+      --r:14px;--sh:0 8px 24px rgba(23,33,24,0.06);
+      --red:#b42318;--orange:#e67e22;--blue:#2980b9;--green:#27ae60;
+    }
+    body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f7f3;color:var(--dark);min-height:100vh}
+    
+    /* Topbar */
+    .topbar{background:white;border-bottom:1px solid var(--bd);padding:0 2%;height:64px;
+      display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;
+      box-shadow:0 2px 16px rgba(23,33,24,0.06)}
+    .t-logo{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;
+      color:var(--leaf);text-decoration:none;display:flex;align-items:center;gap:8px}
+    .t-logo .badge{background:var(--wheat);color:white;font-family:'DM Sans',sans-serif;
+      font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:0.05em;text-transform:uppercase}
+    .t-right{display:flex;align-items:center;gap:10px}
+    .t-right a{color:var(--light);text-decoration:none;padding:6px 12px;border-radius:8px;
+      border:1px solid var(--bd);font-size:0.82rem;transition:all 0.2s}
+    .t-right a:hover{color:var(--leaf);border-color:var(--leaf);background:var(--mist)}
+    
+    /* Layout */
+    .layout{display:flex;min-height:calc(100vh - 64px)}
+    .sidebar{width:220px;background:white;border-right:1px solid var(--bd);
+      padding:20px 0;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;flex-shrink:0}
+    .sb-section{padding:6px 12px;font-size:0.68rem;font-weight:700;color:var(--light);
+      text-transform:uppercase;letter-spacing:0.08em;margin-top:14px;margin-bottom:4px}
+    .sb-link{display:flex;align-items:center;gap:9px;padding:9px 18px;
+      color:var(--mid);text-decoration:none;font-size:0.84rem;font-weight:500;
+      transition:all 0.2s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+    .sb-link svg{width:16px;height:16px;flex-shrink:0;opacity:0.7}
+    .sb-link:hover,.sb-link.active{color:var(--leaf);background:var(--mist)}
+    .sb-link.active{font-weight:600;border-right:3px solid var(--leaf)}
+
+    /* Main */
+    .main{flex:1;padding:28px;overflow-x:hidden}
+    .section{display:none}
+    .section.active{display:block}
+    
+    /* Cards */
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+    .stat-card{background:white;border-radius:var(--r);padding:18px 20px;
+      border:1px solid var(--bd);box-shadow:var(--sh)}
+    .stat-card .val{font-size:2rem;font-weight:700;color:var(--leaf);letter-spacing:-0.5px}
+    .stat-card .lbl{font-size:0.78rem;color:var(--light);margin-top:3px}
+    
+    /* Section header */
+    .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .sec-hdr h2{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--dark)}
+    
+    /* Btn */
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:6px;
+      font-size:0.83rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;font-family:inherit}
+    .btn-primary{background:var(--leaf);color:white}
+    .btn-primary:hover{background:#1b5e20}
+    .cat-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--bd);background:white;cursor:pointer;font-size:0.8rem;font-weight:500;color:var(--mid);transition:all 0.18s}
+    .cat-btn.active{background:var(--leaf);color:white;border-color:var(--leaf)}
+    .btn-secondary{background:var(--mist);color:var(--mid);border:1.5px solid var(--bd)}
+    .btn-secondary:hover{background:var(--sky);border-color:var(--leaf);color:var(--leaf)}
+    .btn-danger{background:#fdf2f2;color:var(--red);border:1.5px solid #fcd5d5}
+    .btn-danger:hover{background:var(--red);color:white}
+    .btn-sm{padding:5px 12px;font-size:0.77rem;border-radius:6px}
+    
+    /* Crops grid */
+    .crops-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:24px}
+    .crop-card{background:white;border-radius:8px;padding:14px 10px;text-align:center;
+      border:1.5px solid var(--bd);cursor:pointer;transition:all 0.2s;position:relative;box-shadow:var(--sh)}
+    .crop-card:hover{border-color:var(--leaf);box-shadow:0 8px 24px rgba(23,33,24,0.1);transform:translateY(-2px)}
+    .crop-card.selected{border-color:var(--leaf);background:#f5f7f3}
+    .crop-icon{width:56px;height:56px;border-radius:10px;object-fit:cover;margin:0 auto 8px;display:block;border:1px solid var(--bd)}
+    .crop-icon-placeholder{width:56px;height:56px;border-radius:10px;margin:0 auto 8px;
+      background:var(--sky);border:1.5px dashed var(--bd);display:flex;align-items:center;justify-content:center}
+    .crop-icon-placeholder svg{width:24px;height:24px;opacity:0.4}
+    .crop-card .c-name{font-size:0.78rem;font-weight:600;color:var(--dark)}
+    .crop-card .c-hindi{font-family:'Noto Sans Devanagari',sans-serif;font-size:0.65rem;color:var(--light);margin-top:2px}
+    .crop-card .c-del{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;
+      background:var(--red);color:white;border:none;cursor:pointer;font-size:10px;
+      display:none;align-items:center;justify-content:center}
+    .crop-card:hover .c-del{display:flex}
+    
+    /* Add crop empty state */
+    .empty-state{text-align:center;padding:48px 20px;color:var(--light)}
+    .empty-state svg{width:56px;height:56px;opacity:0.3;margin-bottom:12px}
+    .empty-state p{font-size:0.9rem;margin-bottom:16px}
+    
+    /* Modal */
+    .modal-bg{display:none;position:fixed;inset:0;background:rgba(23,33,24,0.45);z-index:500;
+      align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
+    .modal-bg.open{display:flex}
+    .modal{background:white;border-radius:8px;width:100%;max-width:720px;max-height:90vh;
+      overflow-y:auto;box-shadow:0 24px 80px rgba(23,33,24,0.18);border:1px solid var(--bd)}
+    .modal-hdr{padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between;
+      border-bottom:1px solid var(--bd);padding-bottom:16px;position:sticky;top:0;background:white;z-index:2}
+    .modal-hdr h3{font-size:1.1rem;font-weight:700;color:var(--dark)}
+    .modal-close{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--light);
+      width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+    .modal-close:hover{background:var(--sky)}
+    .modal-body{padding:22px 24px}
+    .modal-footer{padding:14px 24px;border-top:1px solid var(--bd);display:flex;gap:10px;justify-content:flex-end;
+      position:sticky;bottom:0;background:white}
+    
+    /* Form elements */
+    .form-group{margin-bottom:16px}
+    .form-group label{display:block;font-size:0.8rem;font-weight:700;color:var(--mid);margin-bottom:5px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    input[type=text],input[type=number],select,textarea{
+      width:100%;padding:9px 13px;border:1px solid #cdd8ca;border-radius:6px;
+      font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:0.84rem;color:var(--dark);
+      background:white;transition:border-color 0.2s;box-sizing:border-box}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--leaf)}
+    textarea{resize:vertical;min-height:70px;line-height:1.5}
+    
+    /* Tab group */
+    .tabs{display:flex;gap:2px;background:var(--sky);border-radius:8px;padding:3px;margin-bottom:18px}
+    .tab-btn{flex:1;padding:7px 10px;border-radius:6px;border:none;cursor:pointer;
+      font-size:0.78rem;font-weight:700;color:var(--light);background:none;transition:all 0.2s;text-align:center;font-family:inherit}
+    .tab-btn.active{background:white;color:var(--leaf);box-shadow:0 1px 4px rgba(23,33,24,0.1)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    
+    /* Repeater */
+    .repeater-item{background:var(--mist);border-radius:8px;padding:14px;margin-bottom:10px;
+      border:1px solid var(--bd);position:relative}
+    .repeater-item .rm-btn{position:absolute;top:8px;right:8px;background:none;border:none;
+      cursor:pointer;color:var(--red);font-size:0.9rem}
+    .add-item-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--sky);
+      border:1px dashed #cdd8ca;border-radius:6px;cursor:pointer;font-size:0.8rem;
+      color:var(--leaf);font-weight:700;transition:all 0.2s;font-family:inherit}
+    .add-item-btn:hover{background:var(--mist);border-color:var(--leaf)}
+    
+    /* Disease tabs inside modal */
+    .disease-list{display:flex;flex-direction:column;gap:10px}
+    .disease-entry{background:var(--mist);border-radius:8px;border:1px solid var(--bd)}
+    .disease-entry-hdr{display:flex;align-items:center;justify-content:space-between;
+      padding:10px 14px;cursor:pointer}
+    .disease-entry-hdr .d-name{font-weight:700;font-size:0.85rem}
+    .disease-entry-body{padding:0 14px 14px;border-top:1px solid var(--bd)}
+    .disease-entry-body.collapsed{display:none}
+    
+    /* Upload zone */
+    .upload-zone{border:1px dashed #cdd8ca;border-radius:8px;padding:20px;text-align:center;
+      cursor:pointer;transition:all 0.2s;background:var(--sky)}
+    .upload-zone:hover{border-color:var(--leaf);background:var(--mist)}
+    .upload-zone img{width:80px;height:80px;object-fit:cover;border-radius:8px;margin:0 auto 8px}
+    .upload-zone p{font-size:0.78rem;color:var(--light)}
+    
+    /* Table */
+    .data-table{width:100%;border-collapse:collapse}
+    .data-table th{padding:10px 14px;text-align:left;font-size:0.75rem;font-weight:700;
+      color:var(--light);text-transform:uppercase;letter-spacing:0.05em;
+      background:#f5f7f3;border-bottom:1px solid var(--bd)}
+    .data-table td{padding:11px 14px;border-bottom:1px solid var(--bd);font-size:0.84rem;vertical-align:middle}
+    .data-table tr:hover td{background:#f5f7f3}
+    .status-badge{padding:3px 9px;border-radius:20px;font-size:0.72rem;font-weight:700}
+    .badge-active{background:#e8f8ee;color:#1a7a3c}
+    .badge-blocked{background:#fde8e8;color:var(--red)}
+    .badge-suspended{background:#fff3e0;color:var(--orange)}
+    
+    /* Toast */
+    .toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:6px;
+      background:var(--leaf);color:white;font-size:0.84rem;font-weight:700;z-index:1000;
+      box-shadow:var(--sh);opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none}
+    .toast.show{opacity:1;transform:translateY(0)}
+    .toast.error{background:#b42318}
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+    
+    /* Icons inline */
+    .icon-img{width:36px;height:36px;border-radius:6px;object-fit:cover}
+    .tag{display:inline-block;padding:2px 8px;background:var(--sky);border-radius:5px;
+      font-size:0.72rem;font-weight:600;color:#415044;margin:2px}
+    
+    /* Hamburger button */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;
+      width:36px;height:36px;cursor:pointer;border:none;background:none;gap:5px;padding:4px;
+      border-radius:8px;transition:background 0.2s}
+    .hamburger:hover{background:var(--sky)}
+    .hamburger span{display:block;width:20px;height:2px;background:var(--mid);border-radius:2px;
+      transition:all 0.3s}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(23,33,24,0.45);z-index:299;
+      backdrop-filter:blur(2px)}
+    .sidebar-overlay.open{display:block}
+
+    @media(max-width:1024px){
+      .sidebar{width:180px}
+      .main{padding:20px}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .crops-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+    }
+    @media(max-width:768px){
+      .topbar{padding:0 3%;height:56px}
+      .t-logo{font-size:0.95rem}
+      .t-logo .badge{font-size:0.5rem;padding:1px 5px}
+      .hamburger{display:flex}
+      .sidebar{
+        position:fixed;top:0;left:0;height:100vh;z-index:300;
+        transform:translateX(-100%);transition:transform 0.3s ease;
+        width:240px;padding-top:72px;box-shadow:4px 0 24px rgba(30,26,20,0.12)
+      }
+      .sidebar.open{transform:translateX(0)}
+      .main{padding:16px;max-width:100%}
+      .stats-grid{grid-template-columns:1fr 1fr;gap:10px}
+      .stat-card{padding:14px 16px}
+      .stat-card .val{font-size:1.6rem}
+      .stat-card .lbl{font-size:0.7rem}
+      .form-row,.form-row-3{grid-template-columns:1fr}
+      .crops-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+      .crop-icon,.crop-icon-placeholder{width:48px;height:48px}
+      .crop-card{padding:10px 8px}
+      .crop-card .c-name{font-size:0.7rem}
+      .crop-card .c-hindi{font-size:0.58rem}
+      .modal{max-width:95vw;max-height:80vh}
+      .data-table{font-size:0.75rem}
+      .data-table th,.data-table td{padding:8px 10px}
+      .sec-hdr h2{font-size:1.1rem}
+      .tabs{flex-wrap:wrap}
+      .tab{font-size:0.75rem;padding:8px 12px}
+    }
+    @media(max-width:480px){
+      .topbar{padding:0 2%;height:52px}
+      .t-logo{font-size:0.85rem;gap:4px}
+      .t-right{gap:6px}
+      .t-right a{padding:4px 8px;font-size:0.7rem}
+      .main{padding:12px;margin-bottom:60px}
+      .stats-grid{grid-template-columns:1fr;gap:8px}
+      .stat-card{padding:12px}
+      .stat-card .val{font-size:1.4rem}
+      .stat-card .lbl{font-size:0.65rem}
+      .sec-hdr{flex-direction:column;align-items:flex-start;gap:8px}
+      .sec-hdr h2{font-size:1rem}
+      .crops-grid{grid-template-columns:repeat(auto-fill,minmax(75px,1fr));gap:6px}
+      .crop-icon,.crop-icon-placeholder{width:40px;height:40px}
+      .crop-card{padding:8px 6px}
+      .crop-card .c-name{font-size:0.65rem}
+      .crop-card .c-hindi{font-size:0.55rem}
+      .btn{padding:7px 14px;font-size:0.75rem}
+      .btn-sm{padding:4px 10px;font-size:0.7rem}
+      .modal-hdr h3{font-size:1.1rem}
+      .modal-body{padding:16px 20px}
+      input[type=text],input[type=number],select,textarea{padding:8px 10px;font-size:0.8rem}
+      .data-table{font-size:0.7rem}
+      .data-table th,.data-table td{padding:6px 8px}
+      .tab{font-size:0.7rem;padding:6px 10px}
+    }
+  </style>
+</head>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LOGIN OVERLAY — shown while unauthenticated
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="loginOverlay" style="
+  display:flex;position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#f0f7ee 0%,#e8f5e0 100%);
+  align-items:center;justify-content:center;font-family:inherit
+">
+  <div style="
+    background:white;border:1px solid #dfe8dc;border-radius:12px;
+    padding:40px 36px;width:100%;max-width:400px;
+    box-shadow:0 8px 40px rgba(23,33,24,0.12);
+  ">
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="font-size:2rem;font-weight:700;color:#2f7d32;letter-spacing:-0.5px">🌾 FasalX</div>
+      <div style="font-size:0.82rem;color:#5b665c;margin-top:4px">Admin Portal — Sign In</div>
+    </div>
+
+    <!-- Error banner -->
+    <div id="loginError" style="
+      display:none;background:#fdf2f2;border:1px solid #fcd5d5;
+      color:#b42318;border-radius:6px;padding:10px 14px;
+      font-size:0.82rem;font-weight:600;margin-bottom:16px
+    "></div>
+
+    <!-- Fields -->
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:0.78rem;font-weight:700;color:#56615a;margin-bottom:5px">Email</label>
+      <input id="loginEmail" type="email" placeholder="admin@fasalx.com"
+        style="width:100%;box-sizing:border-box;border:1px solid #cdd8ca;border-radius:6px;padding:10px 13px;font:inherit;font-size:0.88rem"
+        onkeydown="if(event.key==='Enter')document.getElementById('loginPwd').focus()"
+      />
+    </div>
+    <div style="margin-bottom:22px">
+      <label style="display:block;font-size:0.78rem;font-weight:700;color:#56615a;margin-bottom:5px">Password</label>
+      <input id="loginPwd" type="password" placeholder="••••••••"
+        style="width:100%;box-sizing:border-box;border:1px solid #cdd8ca;border-radius:6px;padding:10px 13px;font:inherit;font-size:0.88rem"
+        onkeydown="if(event.key==='Enter')adminSignIn()"
+      />
+    </div>
+
+    <!-- Sign-in button -->
+    <button id="loginBtn" onclick="adminSignIn()" style="
+      width:100%;border:none;border-radius:6px;
+      background:#2f7d32;color:white;
+      padding:11px;font:inherit;font-size:0.9rem;font-weight:700;
+      cursor:pointer;transition:background 0.2s
+    " onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2f7d32'">
+      Sign In
+    </button>
+
+    <div style="margin-top:18px;text-align:center;font-size:0.75rem;color:#5b665c">
+      Only users with <strong>admin</strong> Firebase custom claims can access this portal.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     MAIN APP (hidden until authenticated)
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="appShell" style="display:none">
+
+<!-- Topbar -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="/admin" class="t-logo">
+      <img src="/static/images/km-logo.svg" alt="" style="height:28px" onerror="this.style.display='none'"><b>FasalX </b>
+      <span class="badge">Admin</span>
+    </a>
+  </div>
+  <div class="t-right">
+    <a href="/dashboard" target="_blank">View Site</a>
+    <a href="#" id="logoutBtn" onclick="adminSignOut();return false;">Logout</a>
+  </div>
+</div>
+
+<!-- Sidebar overlay (mobile backdrop) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sb-section">Overview</div>
+    <button class="sb-link active" onclick="showSection('overview')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+
+    <div class="sb-section">Crop Data</div>
+    <button class="sb-link" onclick="showSection('crops')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 2v10l4.24 4.24"/><circle cx="12" cy="12" r="2"/></svg>
+      Crop Library
+    </button>
+    <button class="sb-link" onclick="showSection('diseases')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Disease Info
+    </button>
+
+    <div class="sb-section">Community</div>
+    <button class="sb-link" onclick="showSection('forum')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Forum Posts
+    </button>
+
+    <div class="sb-section">Users</div>
+    <button class="sb-link" onclick="showSection('users')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Manage Users
+    </button>
+
+    <div class="sb-section">Schemes & Alerts</div>
+    <button class="sb-link" onclick="showSection('schemes')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Gov Schemes
+    </button>
+    <button class="sb-link" onclick="showSection('notifications')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Send Notification
+    </button>
+
+    <div class="sb-section">Settings</div>
+    <button class="sb-link" onclick="showSection('config')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M20 12h2M2 12H0M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 20v2M12 2V0"/></svg>
+      App Settings
+    </button>
+    <button class="sb-link" onclick="showSection('cardicons')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Card Icons
+    </button>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ─── OVERVIEW ─── -->
+    <div class="section active" id="sec-overview">
+      <div class="sec-hdr">
+        <h2>Dashboard Overview</h2>
+        <span style="font-size:0.8rem;color:var(--light)" id="lastUpdated"></span>
+      </div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="val" id="st-users">—</div><div class="lbl">Total Users</div></div>
+        <div class="stat-card"><div class="val" id="st-crops">—</div><div class="lbl">Crops in Library</div></div>
+        <div class="stat-card"><div class="val" id="st-posts">—</div><div class="lbl">Forum Posts</div></div>
+        <div class="stat-card"><div class="val" id="st-blocked" style="color:var(--red)">—</div><div class="lbl">Blocked Users</div></div>
+        <div class="stat-card"><div class="val" id="st-listings">—</div><div class="lbl">Marketplace Listings</div></div>
+        <div class="stat-card"><div class="val" id="st-schemes">—</div><div class="lbl">Gov Schemes</div></div>
+      </div>
+
+      <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--mid)">Recent Registrations</h3>
+      <div style="background:white;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden">
+        <table class="data-table" id="recentUsersTable">
+          <thead><tr><th>Name</th><th>Email</th><th>Location</th><th>Joined</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── CROPS ─── -->
+    <div class="section" id="sec-crops">
+      <div class="sec-hdr">
+        <h2>Crop Library</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn" onclick="setupStorage()" id="setupStorageBtnCrops" style="background:white;border:1px solid var(--bd);color:var(--mid);font-size:0.8rem" title="Run once to enable image uploads">⚙ Setup Storage</button>
+          <button class="btn btn-primary" onclick="openAddCropModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add New Crop
+          </button>
+        </div>
+      </div>
+      <div id="cropsGrid" class="crops-grid">
+        <div class="empty-state" style="grid-column:1/-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/></svg>
+          <p>No crops added yet. Click "Add New Crop" to get started.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── DISEASES ─── -->
+    <div class="section" id="sec-diseases">
+      <div class="sec-hdr">
+        <h2>Disease Information</h2>
+        <p style="font-size:0.82rem;color:var(--light)">Disease details are managed within each crop entry</p>
+      </div>
+      <div id="diseasesList" style="display:grid;gap:14px"></div>
+    </div>
+
+    <!-- ─── FORUM ─── -->
+    <div class="section" id="sec-forum">
+      <div class="sec-hdr">
+        <h2>Forum Posts</h2>
+        <span style="font-size:0.82rem;color:var(--light)" id="forumCount"></span>
+      </div>
+      <div style="background:white;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden">
+        <table class="data-table" id="postsTable">
+          <thead><tr><th>Title</th><th>Author</th><th>Tag</th><th>Votes</th><th>Answers</th><th>Date</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── USERS ─── -->
+    <div class="section" id="sec-users">
+      <div class="sec-hdr">
+        <h2>Manage Users</h2>
+        <input type="text" placeholder="Search users..." id="userSearch" style="width:220px;padding:7px 12px;font-size:0.82rem" oninput="filterUsers()">
+      </div>
+      <div style="background:white;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden">
+        <table class="data-table" id="usersTable">
+          <thead><tr><th>Name</th><th>Email</th><th>Location</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── CONFIG ─── -->
+    <div class="section" id="sec-config">
+      <div class="sec-hdr">
+        <h2>App Settings</h2>
+      </div>
+      <div style="background:white;border-radius:var(--r);border:1px solid var(--bd);padding:22px;max-width:560px">
+        <h3 style="font-size:1rem;font-weight:600;margin-bottom:14px">Expense Categories</h3>
+        <p style="font-size:0.82rem;color:var(--light);margin-bottom:16px">These categories appear in crop expense tracking for farmers.</p>
+        <div id="expCatList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+        <button class="add-item-btn" onclick="addExpCategory()">+ Add Category</button>
+        <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--bd);display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="saveConfig()">Save Settings</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ─── CARD ICONS ─── -->
+    <div class="section" id="sec-cardicons">
+      <div class="sec-hdr">
+        <h2>Dashboard Card Icons</h2>
+        <button class="btn btn-primary" onclick="setupStorage()" id="setupStorageBtn" title="Run once to create the Supabase storage bucket">⚙ Setup Storage</button>
+      </div>
+      <p style="font-size:0.82rem;color:var(--light);margin-bottom:18px">Upload custom icons for each feature card on the farmer dashboard. Images are stored in Supabase — shown on all devices instantly. <strong>First time?</strong> Click <em>Setup Storage</em> above once.</p>
+      <div id="cardIconsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px"></div>
+    </div>
+
+
+    <!-- ─── SCHEMES ─── -->
+    <div class="section" id="sec-schemes">
+      <div class="sec-hdr">
+        <h2>Government Schemes</h2>
+        <button class="btn btn-primary" onclick="openSchemeModal(null)">+ Add Scheme</button>
+      </div>
+      <div id="schemesContainer" style="display:flex;flex-direction:column;gap:14px"></div>
+    </div>
+
+    <!-- ─── NOTIFICATIONS ─── -->
+    <div class="section" id="sec-notifications">
+      <div class="sec-hdr">
+        <h2>Broadcast Notification</h2>
+      </div>
+
+      <!-- Auto Notifications Info Panel -->
+      <div style="background:linear-gradient(135deg,#f0f7ed,#e8f5e3);border:1px solid #c8e6c0;border-radius:var(--r);padding:20px;margin-bottom:24px">
+        <h3 style="font-size:0.95rem;font-weight:700;color:var(--leaf);margin-bottom:12px">🤖 Automatic Notifications (No Input Needed)</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+          <div style="background:white;border-radius:10px;padding:12px;border:1px solid #dce8d8">
+            <div style="font-size:1.2rem;margin-bottom:4px">🌤</div>
+            <div style="font-weight:600;font-size:0.83rem">Daily Weather Report</div>
+            <div style="font-size:0.75rem;color:var(--light);margin-top:3px">Sent every morning at 7:00 AM IST with temperature, rain chance & farming advice per user's location.</div>
+          </div>
+          <div style="background:white;border-radius:10px;padding:12px;border:1px solid #dce8d8">
+            <div style="font-size:1.2rem;margin-bottom:4px">📋</div>
+            <div style="font-weight:600;font-size:0.83rem">Today's Crop Tasks</div>
+            <div style="font-size:0.75rem;color:var(--light);margin-top:3px">Sent at 7:15 AM IST listing each farmer's pending crop tasks due that day.</div>
+          </div>
+          <div style="background:white;border-radius:10px;padding:12px;border:1px solid #dce8d8">
+            <div style="font-size:1.2rem;margin-bottom:4px">🌱</div>
+            <div style="font-weight:600;font-size:0.83rem">New Crop Added</div>
+            <div style="font-size:0.75rem;color:var(--light);margin-top:3px">Fired instantly to all farmers when you add a new crop to the library.</div>
+          </div>
+          <div style="background:white;border-radius:10px;padding:12px;border:1px solid #dce8d8">
+            <div style="font-size:1.2rem;margin-bottom:4px">📜</div>
+            <div style="font-weight:600;font-size:0.83rem">New Government Scheme</div>
+            <div style="font-size:0.75rem;color:var(--light);margin-top:3px">Fired instantly to all farmers when you publish a new scheme.</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" onclick="testAutoNotif('weather')" style="font-size:0.78rem;padding:6px 14px;background:white;border:1px solid var(--bd)">🌤 Test Weather Now</button>
+          <button class="btn" onclick="testAutoNotif('tasks')"   style="font-size:0.78rem;padding:6px 14px;background:white;border:1px solid var(--bd)">📋 Test Tasks Now</button>
+        </div>
+      </div>
+
+      <!-- Manual Broadcast -->
+      <div style="background:white;border-radius:var(--r);border:1px solid var(--bd);padding:24px;max-width:680px">
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:4px">📣 Manual Broadcast</h3>
+        <p style="font-size:0.82rem;color:var(--light);margin-bottom:20px">Send a custom notification to all farmers instantly.</p>
+
+        <!-- Category -->
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:0.8rem;font-weight:600;color:var(--mid);margin-bottom:6px">Category *</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px" id="bn_category_btns">
+            <button class="cat-btn active" data-cat="general"   onclick="selectCat(this)">📢 General</button>
+            <button class="cat-btn"        data-cat="weather"   onclick="selectCat(this)">🌤 Weather</button>
+            <button class="cat-btn"        data-cat="crop"      onclick="selectCat(this)">🌱 Crop</button>
+            <button class="cat-btn"        data-cat="scheme"    onclick="selectCat(this)">📜 Scheme</button>
+            <button class="cat-btn"        data-cat="market"    onclick="selectCat(this)">🛒 Market</button>
+            <button class="cat-btn"        data-cat="disease"   onclick="selectCat(this)">🔬 Disease Alert</button>
+            <button class="cat-btn"        data-cat="tip"       onclick="selectCat(this)">💡 Farming Tip</button>
+            <button class="cat-btn"        data-cat="urgent"    onclick="selectCat(this)">🚨 Urgent</button>
+          </div>
+          <input type="hidden" id="bn_category" value="general">
+        </div>
+
+        <!-- Topic -->
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:0.8rem;font-weight:600;color:var(--mid);margin-bottom:6px">Topic / Subject *</label>
+          <input type="text" id="bn_topic" placeholder="e.g. Fertilizer Subsidy, Pest Alert, Market Update"
+            style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--bd);font-size:0.88rem;outline:none;box-sizing:border-box">
+        </div>
+
+        <!-- Description (English) -->
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:0.8rem;font-weight:600;color:var(--mid);margin-bottom:6px">Description (English) *</label>
+          <textarea id="bn_msg_en" rows="3" placeholder="Full notification message in English…"
+            style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--bd);font-size:0.88rem;outline:none;resize:vertical;box-sizing:border-box;font-family:inherit"></textarea>
+        </div>
+
+        <!-- Description (Hindi) -->
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:0.8rem;font-weight:600;color:var(--mid);margin-bottom:6px">Description (Hindi)</label>
+          <textarea id="bn_msg_hi" rows="3" placeholder="हिंदी में पूरा संदेश…"
+            style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--bd);font-size:0.88rem;outline:none;resize:vertical;box-sizing:border-box;font-family:inherit"></textarea>
+        </div>
+
+        <!-- Link -->
+        <div style="margin-bottom:20px">
+          <label style="display:block;font-size:0.8rem;font-weight:600;color:var(--mid);margin-bottom:6px">Link (optional)</label>
+          <input type="text" id="bn_link" placeholder="/schemes or /marketplace or /library"
+            style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--bd);font-size:0.88rem;outline:none;box-sizing:border-box">
+        </div>
+
+        <!-- Audience -->
+        <div style="margin-bottom:20px">
+          <label style="display:block;font-size:0.8rem;font-weight:600;color:var(--mid);margin-bottom:6px">Send To</label>
+          <select id="bn_audience" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--bd);font-size:0.88rem;outline:none;background:white">
+            <option value="all">All Farmers</option>
+            <option value="active_crop">Farmers with Active Crops</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="broadcastBtn" onclick="broadcastNotification()" style="min-width:200px">📣 Send to All Farmers</button>
+        <div id="broadcastResult" style="margin-top:14px;font-size:0.85rem"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ─── CROP MODAL ─── -->
+<div class="modal-bg" id="cropModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="cropModalTitle">Add New Crop</h3>
+      <button class="modal-close" onclick="closeCropModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs" id="cropTabs">
+        <button class="tab-btn active" onclick="switchTab('basic')">Basic Info</button>
+        <button class="tab-btn" onclick="switchTab('stages')">Stages</button>
+        <button class="tab-btn" onclick="switchTab('guide')">Grow Guide</button>
+        <button class="tab-btn" onclick="switchTab('diseases')">Diseases</button>
+        <button class="tab-btn" onclick="switchTab('economics')">Economics</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-basic">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Crop Key (ID) *</label>
+            <input type="text" id="cropKey" placeholder="e.g., wheat, cotton, tomato" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'_')">
+            <small style="color:var(--light);font-size:0.72rem">Lowercase, no spaces.</small>
+          </div>
+          <div class="form-group">
+            <label>English Name *</label>
+            <input type="text" id="cropName" placeholder="e.g., Wheat">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Crop Image *</label>
+          <div class="upload-zone" id="iconUploadZone" onclick="document.getElementById('iconFileInput').click()" style="cursor:pointer">
+            <img id="iconPreview" style="display:none;max-height:120px;border-radius:8px;margin:0 auto 8px">
+            <svg id="iconPlaceholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32" style="display:block;margin:0 auto 8px;opacity:0.4">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <p id="iconUploadText">Click to upload crop image (JPG, PNG, WebP, GIF)</p>
+            <input type="file" id="iconFileInput" accept="image/*" style="display:none" onchange="uploadCropIcon()">
+            <input type="hidden" id="cropIconUrl">
+          </div>
+          <small style="color:var(--light);font-size:0.72rem;margin-top:5px">Recommended: Square image (300×300 px or larger). Stored in Supabase — visible on all devices.</small>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hindi Name *</label>
+            <input type="text" id="cropHindi" placeholder="e.g., गेहूं" style="font-family:'Noto Sans Devanagari',sans-serif">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>English Description</label>
+            <textarea id="cropDescEn" placeholder="Brief description in English" style="min-height:60px"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Hindi Description</label>
+            <textarea id="cropDescHi" placeholder="Hindi में विवरण" style="font-family:'Noto Sans Devanagari',sans-serif;min-height:60px"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Duration *</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end">
+            <div>
+              <label style="font-size:0.73rem;color:var(--light);font-weight:500;margin-bottom:4px;display:block">Value</label>
+              <input type="number" id="cropDurationValue" placeholder="e.g., 4" min="1" oninput="updateDurationDays()">
+            </div>
+            <div>
+              <label style="font-size:0.73rem;color:var(--light);font-weight:500;margin-bottom:4px;display:block">Unit</label>
+              <select id="cropDurationUnit" onchange="updateDurationDays()">
+                <option value="days">Days</option>
+                <option value="weeks">Weeks</option>
+                <option value="months">Months</option>
+                <option value="years">Years</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.73rem;color:var(--light);font-weight:500;margin-bottom:4px;display:block">= Total Days (auto)</label>
+              <input type="number" id="cropDuration" placeholder="—" readonly style="background:#f5f5f5;color:var(--leaf);font-weight:700">
+            </div>
+          </div>
+          <small style="color:var(--light);font-size:0.72rem;margin-top:4px;display:block">Enter a human-friendly duration (e.g., 4 months). Total days is computed automatically and stored.</small>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ideal Temperature</label>
+            <input type="text" id="cropTemp" placeholder="e.g., 10–25°C">
+          </div>
+          
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Water Need</label>
+            <input type="text" id="cropWater" placeholder="e.g., 450–650 mm">
+          </div>
+          
+        </div>
+        <div class="form-group">
+          <label>Seasons</label>
+          <div id="seasonsList" style="display:flex;flex-direction:column;gap:7px;margin-bottom:8px"></div>
+          <button class="add-item-btn" onclick="addSeason()">+ Add Season</button>
+        </div>
+      </div>
+
+      <!-- Stages Tab -->
+      <div class="tab-panel" id="tab-stages">
+        <p style="font-size:0.82rem;color:var(--light);margin-bottom:14px">Define crop growth stages with day ranges.</p>
+        <div id="stagesList" style="display:flex;flex-direction:column;gap:10px"></div>
+        <button class="add-item-btn" onclick="addStage()" style="margin-top:10px">+ Add Stage</button>
+      </div>
+
+      <!-- Grow Guide Tab -->
+      <div class="tab-panel" id="tab-guide">
+        <p style="font-size:0.82rem;color:var(--light);margin-bottom:14px">Add actionable tasks for farmers (irrigation, fertilizer, monitoring, harvest).</p>
+        <div id="guideList" style="display:flex;flex-direction:column;gap:10px"></div>
+        <button class="add-item-btn" onclick="addGuideTask()" style="margin-top:10px">+ Add Task</button>
+      </div>
+
+      <!-- Diseases Tab -->
+      <div class="tab-panel" id="tab-diseases">
+        <!-- Inner sub-tabs -->
+        <div style="display:flex;gap:2px;background:var(--sky);border-radius:10px;padding:3px;margin-bottom:18px;width:fit-content">
+          <button class="tab-btn active" id="dtab-btn-diseases" onclick="switchDiseaseSubTab('diseases',this)" style="min-width:120px">🦠 Diseases</button>
+          <button class="tab-btn" id="dtab-btn-healthy" onclick="switchDiseaseSubTab('healthy',this)" style="min-width:140px">🌿 Healthy Crop</button>
+        </div>
+
+        <!-- Sub-tab: Diseases list -->
+        <div id="dtab-diseases">
+          <p style="font-size:0.82rem;color:var(--light);margin-bottom:14px">Add diseases with symptoms, causes, precautions and treatments.</p>
+          <div id="diseaseFormList" style="display:flex;flex-direction:column;gap:10px"></div>
+          <button class="add-item-btn" onclick="addDiseaseEntry()" style="margin-top:10px">+ Add Disease</button>
+        </div>
+
+        <!-- Sub-tab: Healthy Crop Details -->
+        <div id="dtab-healthy" style="display:none">
+          <p style="font-size:0.82rem;color:var(--light);margin-bottom:14px">Describe what a healthy, disease-free crop looks and feels like — helps farmers identify problems early.</p>
+          <div style="background:linear-gradient(135deg,#f0fbf0,#e8f8ea);border:1.5px solid #b8e6ba;border-radius:12px;padding:18px">
+            <div class="form-group">
+              <label style="color:#2e7d32">Healthy Appearance</label>
+              <textarea id="healthy-appearance" placeholder="e.g., Deep green leaves, firm upright stem, no spots or discolouration, uniform leaf size…" style="border-color:#b8e6ba;min-height:80px"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label style="color:#2e7d32">Healthy Leaf Colour</label>
+                <textarea id="healthy-leaf-color" placeholder="e.g., Bright dark green&#10;Uniform colour across all leaves&#10;No yellowing or brown patches" style="border-color:#b8e6ba;min-height:80px"></textarea>
+              </div>
+              <div class="form-group">
+                <label style="color:#2e7d32">Healthy Root Condition</label>
+                <textarea id="healthy-root" placeholder="e.g., White fibrous roots, no rot or odour&#10;Roots should be firm and spread well&#10;No blackening, smell or mushiness" style="border-color:#b8e6ba;min-height:80px"></textarea>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label style="color:#2e7d32">Ideal Plant Height / Size</label>
+                <textarea id="healthy-size" placeholder="e.g., 60–90 cm at maturity&#10;Stem diameter: 1.5–2 cm&#10;Canopy spread: 30–40 cm" style="border-color:#b8e6ba;min-height:80px"></textarea>
+              </div>
+              <div class="form-group">
+                <label style="color:#2e7d32">Expected Fruit / Grain Quality</label>
+                <textarea id="healthy-quality" placeholder="e.g., Plump grains, no shrivelling&#10;Uniform colour and size&#10;No pest marks or cracks" style="border-color:#b8e6ba;min-height:80px"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label style="color:#2e7d32">Maintenance Tips for a Healthy Crop</label>
+              <textarea id="healthy-tips" placeholder="e.g., Maintain proper plant spacing, do weekly scouting, ensure balanced irrigation and NPK fertilisation…" style="border-color:#b8e6ba;min-height:80px"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Economics Tab -->
+      <div class="tab-panel" id="tab-economics">
+        <p style="font-size:0.82rem;color:var(--light);margin-bottom:14px">Set economics data for crop comparison features.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cost per Acre (₹)</label>
+            <input type="number" id="eco-cost" placeholder="e.g., 28000">
+          </div>
+          <div class="form-group">
+            <label>Yield per Acre</label>
+            <input type="number" id="eco-yield" placeholder="e.g., 20">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Yield Unit</label>
+            <select id="eco-unit">
+              <option value="quintal">Quintal</option>
+              <option value="kg">Kg</option>
+              <option value="ton">Ton</option>
+              <option value="dozen">Dozen</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price per Unit (₹)</label>
+            <input type="number" id="eco-price" placeholder="e.g., 2275">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Revenue per Acre (₹)</label>
+            <input type="number" id="eco-revenue" placeholder="Auto-calculated">
+          </div>
+          <div class="form-group">
+            <label>Profit per Acre (₹)</label>
+            <input type="number" id="eco-profit" placeholder="Auto-calculated">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Data Source</label>
+          <input type="text" id="eco-source" placeholder="e.g., CACP MSP 2024-25">
+        </div>
+        <button class="btn btn-secondary" onclick="calcEconomics()" style="margin-top:6px">Auto-Calculate Revenue &amp; Profit</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeCropModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCrop()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Save Crop
+      </button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /appShell -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+// AUTH — Firebase sign-in, token management, and fetch interceptor
+// ════════════════════════════════════════════════════════════════════════════
+
+const API = '/api/v1/admin/api';  // base path for all admin API calls
+
+/**
+ * Global fetch interceptor.
+ * Attaches 'Authorization: Bearer <idToken>' to every /api/ request.
+ * Falls back silently if the user isn't signed in yet.
+ */
+(function patchFetch() {
+  const _orig = window.fetch.bind(window);
+  window.fetch = async (url, opts = {}) => {
+    try {
+      const user = firebase.auth().currentUser;
+      if (user && typeof url === 'string' && url.startsWith('/api/')) {
+        const token = await user.getIdToken(false);
+        opts = { ...opts, headers: { ...(opts.headers || {}), 'Authorization': `Bearer ${token}` } };
+      }
+    } catch (_) { /* silently skip token injection */ }
+    return _orig(url, opts);
+  };
+})();
+
+/** Show / hide the login overlay and app shell. */
+function _showApp(show) {
+  document.getElementById('loginOverlay').style.display = show ? 'none' : 'flex';
+  document.getElementById('appShell').style.display    = show ? 'block' : 'none';
+}
+
+/** Sign in with email + password and enforce admin role. */
+async function adminSignIn() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pwd   = document.getElementById('loginPwd').value;
+  const errEl = document.getElementById('loginError');
+  const btn   = document.getElementById('loginBtn');
+  errEl.style.display = 'none';
+  if (!email || !pwd) {
+    errEl.textContent = 'Please enter your email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const cred = await firebase.auth().signInWithEmailAndPassword(email, pwd);
+    const tokenResult = await cred.user.getIdTokenResult(true);
+    const claims = tokenResult.claims;
+    const hasAdmin = claims.admin === true || claims.super_admin === true ||
+                     (Array.isArray(claims.roles) && claims.roles.some(r => ['admin','super_admin'].includes(r))) ||
+                     (typeof claims.role === 'string' && ['admin','super_admin'].includes(claims.role));
+    if (!hasAdmin) {
+      await firebase.auth().signOut();
+      throw new Error('Your account does not have admin privileges.');
+    }
+    // onAuthStateChanged will show the app
+  } catch (err) {
+    btn.disabled = false; btn.textContent = 'Sign In';
+    const msg = {
+      'auth/user-not-found':    'No account found with this email.',
+      'auth/wrong-password':    'Incorrect password.',
+      'auth/invalid-credential':'Incorrect email or password.',
+      'auth/invalid-email':     'Invalid email address.',
+      'auth/too-many-requests': 'Too many attempts. Try again later.',
+    }[err.code] || err.message || 'Sign-in failed.';
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+  }
+}
+
+/** Sign the admin out cleanly. */
+async function adminSignOut() {
+  await firebase.auth().signOut();
+  toast('Signed out');
+  setTimeout(() => location.reload(), 800);
+}
+
+/**
+ * Auth state observer.
+ * On sign-in: shows the app shell and loads the dashboard.
+ * On sign-out: shows the login overlay.
+ */
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (user) {
+    _showApp(true);
+    // Proactively refresh the token every 55 min so it never expires mid-session
+    setInterval(async () => {
+      try { await user.getIdToken(true); } catch (_) {}
+    }, 55 * 60 * 1000);
+    loadStats();
+  } else {
+    _showApp(false);
+    const btn = document.getElementById('loginBtn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════════════════
+let allCrops = {};
+let allUsers = [];
+let editingKey = null;
+const TASK_TYPES = ['sowing','irrigate','fertilize','monitor','spray','harvest','other'];
+
+// ─── Navigation ──────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  closeSidebar(); // close on mobile after nav tap
+  if (id === 'overview') loadStats();
+  else if (id === 'crops') loadCrops();
+  else if (id === 'diseases') loadDiseases();
+  else if (id === 'forum') loadPosts();
+  else if (id === 'users') loadUsers();
+  else if (id === 'config') loadConfig();
+  else if (id === 'schemes') loadSchemes();
+  else if (id === 'cardicons') loadCardIcons();
+  else if (id === 'notifications') { /* nothing to load */ }
+}
+
+// ─── Government Schemes ───────────────────────────────────────
+let allSchemes = [];
+
+async function loadSchemes() {
+  const r = await fetch(`${API}/schemes`);
+  const d = await r.json();
+  allSchemes = d.schemes || [];
+  renderSchemes();
+}
+
+function renderSchemes() {
+  const container = document.getElementById('schemesContainer');
+  if (!allSchemes.length) {
+    container.innerHTML = '<div style="background:white;border-radius:var(--r);border:1px dashed var(--bd);padding:40px;text-align:center;color:var(--light)">No schemes yet. Click "+ Add Scheme" to create one.</div>';
+    return;
+  }
+  const catIcons = {general:'📋',seeds:'🌱',insurance:'🛡️',loans:'💰',equipment:'🚜'};
+  container.innerHTML = allSchemes.map(s => {
+    const typeBadge = s.scheme_type === 'state'
+      ? `<span style="background:rgba(52,152,219,0.12);color:#2980b9;padding:2px 8px;border-radius:20px;font-size:0.72rem;font-weight:700">🏛 State${s.state_name ? ': ' + s.state_name : ''}</span>`
+      : `<span style="background:rgba(61,107,46,0.1);color:var(--leaf);padding:2px 8px;border-radius:20px;font-size:0.72rem;font-weight:700">🇮🇳 Central Govt</span>`;
+    return `
+    <div style="background:white;border-radius:var(--r);border:1px solid var(--bd);padding:18px 20px;display:flex;align-items:flex-start;gap:14px">
+      <div style="width:42px;height:42px;border-radius:10px;background:rgba(61,107,46,0.08);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">${catIcons[s.category]||'📋'}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;color:var(--forest);font-size:0.96rem">${s.title_en}</div>
+        ${s.title_hi ? `<div style="font-size:0.82rem;color:var(--light);margin-top:2px">${s.title_hi}</div>` : ''}
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
+          ${typeBadge}
+          <span style="font-size:0.75rem;color:var(--light)">Category: <strong>${s.category}</strong></span>
+          ${s.is_active ? '<span style="color:var(--green);font-size:0.75rem">● Active</span>' : '<span style="color:var(--red);font-size:0.75rem">● Inactive</span>'}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button class="btn" onclick="openSchemeModal('${s.id}')" style="padding:6px 14px;font-size:0.8rem">Edit</button>
+        <button class="btn" onclick="deleteScheme('${s.id}')" style="padding:6px 14px;font-size:0.8rem;background:rgba(192,57,43,0.1);color:var(--red);border-color:transparent">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openSchemeModal(id) {
+  const s = id ? allSchemes.find(x => x.id === id) : null;
+  const STATES = ['Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Delhi','Jammu & Kashmir','Ladakh','Puducherry','Chandigarh'];
+  const stateOptions = STATES.map(st => `<option value="${st}" ${s?.state_name===st?'selected':''}>${st}</option>`).join('');
+  const isState = s?.scheme_type === 'state';
+  const html = `<div class="modal-bg" id="schemeModal" style="display:flex">
+    <div class="modal" style="max-width:640px;width:100%;max-height:90vh;overflow-y:auto">
+      <div class="modal-hdr">
+        <h3>${s ? 'Edit Scheme' : 'Add Government Scheme'}</h3>
+        <button class="modal-close" onclick="document.getElementById('schemeModal').remove()">✕</button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">Title (English) *</label>
+            <input id="sm_title_en" class="fi" value="${s?.title_en||''}" placeholder="PM Kisan Samman Nidhi" /></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">Title (Hindi)</label>
+            <input id="sm_title_hi" class="fi" value="${s?.title_hi||''}" placeholder="पीएम किसान सम्मान निधि" /></div>
+        </div>
+
+        <!-- Scheme Type + State -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">🏛 Scheme Type *</label>
+            <select id="sm_scheme_type" class="fi" onchange="toggleStateField()">
+              <option value="central" ${!isState?'selected':''}>🇮🇳 Central Government</option>
+              <option value="state" ${isState?'selected':''}>🏛 State Government</option>
+            </select>
+          </div>
+          <div id="sm_state_wrap" style="display:${isState?'block':'none'}">
+            <label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">State *</label>
+            <select id="sm_state_name" class="fi">
+              <option value="">Select State...</option>
+              ${stateOptions}
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">Description (English)</label>
+            <textarea id="sm_desc_en" class="fi" rows="3" placeholder="Describe the scheme...">${s?.description_en||''}</textarea></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">Description (Hindi)</label>
+            <textarea id="sm_desc_hi" class="fi" rows="3" placeholder="योजना का विवरण...">${s?.description_hi||''}</textarea></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">Eligibility (English)</label>
+            <textarea id="sm_elig_en" class="fi" rows="3" placeholder="Who can apply...">${s?.eligibility_en||''}</textarea></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">Eligibility (Hindi)</label>
+            <textarea id="sm_elig_hi" class="fi" rows="3" placeholder="कौन आवेदन कर सकता है...">${s?.eligibility_hi||''}</textarea></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">How to Apply (English)</label>
+            <textarea id="sm_apply_en" class="fi" rows="3" placeholder="Steps to apply...">${s?.how_to_apply_en||''}</textarea></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">How to Apply (Hindi)</label>
+            <textarea id="sm_apply_hi" class="fi" rows="3" placeholder="आवेदन के चरण...">${s?.how_to_apply_hi||''}</textarea></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">Apply Link (URL)</label>
+            <input id="sm_link" class="fi" value="${s?.apply_link||''}" placeholder="https://pmkisan.gov.in" /></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:5px">Category</label>
+            <select id="sm_cat" class="fi"><option value="general" ${s?.category==='general'?'selected':''}>General</option><option value="seeds" ${s?.category==='seeds'?'selected':''}>Seeds</option><option value="insurance" ${s?.category==='insurance'?'selected':''}>Insurance</option><option value="loans" ${s?.category==='loans'?'selected':''}>Loans</option><option value="equipment" ${s?.category==='equipment'?'selected':''}>Equipment</option></select></div>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer">
+          <input type="checkbox" id="sm_active" ${(!s||s.is_active)?'checked':''} /> Active (visible to farmers)
+        </label>
+        <div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid var(--bd)">
+          <button class="btn btn-primary" onclick="saveScheme('${id||''}')">Save Scheme</button>
+          <button class="btn" onclick="document.getElementById('schemeModal').remove()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.getElementById('schemeModal').addEventListener('click', e => { if(e.target.id==='schemeModal') e.target.remove(); });
+}
+
+function toggleStateField() {
+  const isState = document.getElementById('sm_scheme_type').value === 'state';
+  document.getElementById('sm_state_wrap').style.display = isState ? 'block' : 'none';
+  if (!isState) document.getElementById('sm_state_name').value = '';
+}
+
+async function saveScheme(id) {
+  const schemeType = document.getElementById('sm_scheme_type').value;
+  const stateName  = schemeType === 'state' ? (document.getElementById('sm_state_name').value.trim()) : '';
+  if (schemeType === 'state' && !stateName) { toast('Please select a state for state government scheme', true); return; }
+  const payload = {
+    id: id || null,
+    title_en: document.getElementById('sm_title_en').value.trim(),
+    title_hi: document.getElementById('sm_title_hi').value.trim(),
+    description_en: document.getElementById('sm_desc_en').value.trim(),
+    description_hi: document.getElementById('sm_desc_hi').value.trim(),
+    eligibility_en: document.getElementById('sm_elig_en').value.trim(),
+    eligibility_hi: document.getElementById('sm_elig_hi').value.trim(),
+    how_to_apply_en: document.getElementById('sm_apply_en').value.trim(),
+    how_to_apply_hi: document.getElementById('sm_apply_hi').value.trim(),
+    apply_link: document.getElementById('sm_link').value.trim(),
+    category: document.getElementById('sm_cat').value,
+    scheme_type: schemeType,
+    state_name: stateName,
+    is_active: document.getElementById('sm_active').checked,
+  };
+  if (!payload.title_en) { toast('Title (English) is required', true); return; }
+  const r = await fetch(`${API}/schemes/save`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const d = await r.json();
+  if (d.success) { document.getElementById('schemeModal')?.remove(); toast('Scheme saved! Farmers notified.'); loadSchemes(); loadStats(); }
+  else toast('Error: ' + (d.error || 'Unknown'), true);
+}
+
+async function deleteScheme(id) {
+  if (!confirm('Delete this scheme? This cannot be undone.')) return;
+  const r = await fetch(`${API}/schemes/delete`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const d = await r.json();
+  if (d.success) { toast('Scheme deleted'); loadSchemes(); loadStats(); }
+  else toast('Error: ' + d.error, true);
+}
+
+// ─── Broadcast Notification ───────────────────────────────────
+function selectCat(btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('bn_category').value = btn.dataset.cat;
+}
+
+async function testAutoNotif(type) {
+  const r = await fetch(`${API}/notifications/test-auto`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ type })
+  });
+  const d = await r.json();
+  if (d.success) toast(`✅ Test '${type}' notification sent to ${d.sent} users!`);
+  else toast('Error: ' + (d.error || 'Failed'), true);
+}
+
+async function broadcastNotification() {
+  const category = document.getElementById('bn_category').value;
+  const topic    = document.getElementById('bn_topic').value.trim();
+  const msg_en   = document.getElementById('bn_msg_en').value.trim();
+  const msg_hi   = document.getElementById('bn_msg_hi').value.trim();
+  const link     = document.getElementById('bn_link').value.trim();
+  const audience = document.getElementById('bn_audience').value;
+
+  if (!topic)  { toast('Topic is required', true); return; }
+  if (!msg_en) { toast('English description is required', true); return; }
+
+  // Build final message with topic prefix
+  const final_en = `[${topic}] ${msg_en}`;
+  const final_hi = msg_hi ? `[${topic}] ${msg_hi}` : final_en;
+
+  const btn = document.getElementById('broadcastBtn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const r = await fetch(`${API}/notifications/broadcast`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ category, topic, message_en: final_en, message_hi: final_hi, link, audience })
+    });
+    const d = await r.json();
+    btn.disabled = false; btn.innerHTML = '📣 Send to All Farmers';
+    if (d.success) {
+      document.getElementById('broadcastResult').innerHTML =
+        `<span style="color:var(--green)">✅ Sent to ${d.sent} farmers successfully!</span>`;
+      document.getElementById('bn_topic').value = '';
+      document.getElementById('bn_msg_en').value = '';
+      document.getElementById('bn_msg_hi').value = '';
+      document.getElementById('bn_link').value = '';
+    } else {
+      document.getElementById('broadcastResult').innerHTML =
+        `<span style="color:var(--red)">Error: ${d.error}</span>`;
+    }
+  } catch(e) {
+    btn.disabled = false; btn.innerHTML = '📣 Send to All Farmers';
+    toast('Network error: ' + e.message, true);
+  }
+}
+
+
+// ─── Toast ───────────────────────────────────────────────────
+function toast(msg, isError=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ─── Stats ───────────────────────────────────────────────────
+async function loadStats() {
+  const r = await fetch(`${API}/stats`);
+  const d = await r.json();
+  document.getElementById('st-users').textContent = d.total_users || 0;
+  document.getElementById('st-crops').textContent = d.total_crops || 0;
+  document.getElementById('st-posts').textContent = d.total_posts || 0;
+  document.getElementById('st-blocked').textContent = d.blocked_users || 0;
+  if (document.getElementById('st-listings')) document.getElementById('st-listings').textContent = d.total_listings || 0;
+  if (document.getElementById('st-schemes')) document.getElementById('st-schemes').textContent = d.total_schemes || 0;
+  document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+  
+  const tbody = document.querySelector('#recentUsersTable tbody');
+  tbody.innerHTML = (d.recent_users || []).map(u => `
+    <tr>
+      <td><strong>${u.full_name || u.name || '—'}</strong></td>
+      <td style="color:var(--light)">${u.email || '—'}</td>
+      <td>${u.location || '—'}</td>
+      <td style="color:var(--light);font-size:0.78rem">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
+    </tr>`).join('');
+}
+
+// ─── Crops ───────────────────────────────────────────────────
+async function loadCrops() {
+  const r = await fetch(`${API}/crops`);
+  const d = await r.json();
+  allCrops = d.crops || {};
+  renderCropsGrid();
+}
+
+function renderCropsGrid() {
+  const grid = document.getElementById('cropsGrid');
+  const keys = Object.keys(allCrops);
+  if (!keys.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 22V12m0-10v2"/><path d="M5 3l7 9 7-9"/><path d="M2 12h20"/></svg>
+      <p>No crops added yet. Click "Add New Crop" to get started.</p>
+      <button class="btn btn-primary" onclick="openAddCropModal()">+ Add Your First Crop</button>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = keys.map(k => {
+    const c = allCrops[k];
+    const iconHtml = c.icon_url 
+      ? `<img class="crop-icon" src="${c.icon_url}" alt="${c.name}" onerror="this.style.display='none'">`
+      : `<div class="crop-icon-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+    return `<div class="crop-card" onclick="editCrop('${k}')">
+      <button class="c-del" onclick="event.stopPropagation();deleteCrop('${k}')">✕</button>
+      ${iconHtml}
+      <div class="c-name">${c.name}</div>
+      <div class="c-hindi">${c.hindi || ''}</div>
+    </div>`;
+  }).join('');
+}
+
+async function uploadCropIcon() {
+  const fileInput = document.getElementById('iconFileInput');
+  if (!fileInput.files || !fileInput.files[0]) return;
+  
+  const file = fileInput.files[0];
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  if (file.size > maxSize) {
+    toast('File size must be less than 5MB', true);
+    return;
+  }
+  
+  const formData = new FormData();
+  formData.append('icon', file);
+  const cropKey = document.getElementById('cropKey').value.trim() || 'temp_crop';
+  formData.append('crop_key', cropKey);
+  
+  try {
+    const r = await fetch(`${API}/crops/upload-icon`, {method: 'POST', body: formData});
+    const d = await r.json();
+    if (d.success) {
+      // Show preview
+      const preview = document.getElementById('iconPreview');
+      const placeholder = document.getElementById('iconPlaceholder');
+      const uploadText = document.getElementById('iconUploadText');
+      
+      preview.src = d.url;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+      uploadText.textContent = 'Click to change icon';
+      
+      // Store URL
+      document.getElementById('cropIconUrl').value = d.url;
+      toast('Icon uploaded successfully!');
+    } else {
+      toast('Icon upload failed: ' + (d.error || 'Unknown error'), true);
+    }
+  } catch (e) {
+    toast('Icon upload error: ' + e.message, true);
+  }
+}
+
+function openAddCropModal() {
+  editingKey = null;
+  document.getElementById('cropModalTitle').textContent = 'Add New Crop';
+  document.getElementById('cropKey').disabled = false;
+  clearCropForm();
+  document.getElementById('cropModal').classList.add('open');
+  switchTab('basic');
+}
+
+function editCrop(key) {
+  editingKey = key;
+  const c = allCrops[key];
+  document.getElementById('cropModalTitle').textContent = 'Edit Crop: ' + c.name;
+  document.getElementById('cropKey').value = key;
+  document.getElementById('cropKey').disabled = true;
+  document.getElementById('cropName').value = c.name || '';
+  document.getElementById('cropHindi').value = c.hindi || '';
+  document.getElementById('cropDescEn').value = c.desc_en || '';
+  document.getElementById('cropDescHi').value = c.desc_hi || '';
+  document.getElementById('cropDuration').value = c.duration_days || '';
+  // Populate friendly duration value/unit (default to days)
+  const durUnit = c.duration_unit || 'days';
+  const durVal = c.duration_value || c.duration_days || '';
+  document.getElementById('cropDurationUnit').value = durUnit;
+  document.getElementById('cropDurationValue').value = durVal;
+  document.getElementById('cropTemp').value = c.ideal_temp || '';
+  document.getElementById('cropWater').value = c.water_need || '';
+  // Icon
+  const iconPreview = document.getElementById('iconPreview');
+  const iconPlaceholder = document.getElementById('iconPlaceholder');
+  const uploadText = document.getElementById('iconUploadText');
+  document.getElementById('cropIconUrl').value = c.icon_url || '';
+  if (c.icon_url) {
+    iconPreview.src = c.icon_url;
+    iconPreview.style.display = 'block';
+    iconPlaceholder.style.display = 'none';
+    uploadText.textContent = 'Click to change icon';
+  } else {
+    iconPreview.style.display = 'none';
+    iconPlaceholder.style.display = 'block';
+    uploadText.textContent = 'Click to upload crop icon (JPG, PNG, WebP, GIF)';
+  }
+  // Seasons
+  document.getElementById('seasonsList').innerHTML = '';
+  (c.seasons || []).forEach(s => addSeason(s));
+  // Stages
+  document.getElementById('stagesList').innerHTML = '';
+  (c.stages || []).forEach(st => addStage(st));
+  // Guide
+  document.getElementById('guideList').innerHTML = '';
+  (c.guide || []).forEach(g => addGuideTask(g));
+  // Diseases
+  document.getElementById('diseaseFormList').innerHTML = '';
+  const di = c.disease_info || {};
+  Object.keys(di).forEach(dname => addDiseaseEntry({name: dname, ...di[dname]}));
+  // Healthy crop
+  const hc = c.healthy_crop || {};
+  document.getElementById('healthy-appearance').value = hc.appearance || '';
+  document.getElementById('healthy-leaf-color').value = hc.leaf_color || '';
+  document.getElementById('healthy-root').value = hc.root || '';
+  document.getElementById('healthy-size').value = hc.size || '';
+  document.getElementById('healthy-quality').value = hc.quality || '';
+  document.getElementById('healthy-tips').value = hc.tips || '';
+  // Economics
+  const eco = c.economics || {};
+  document.getElementById('eco-cost').value = eco.cost_per_acre || '';
+  document.getElementById('eco-yield').value = eco.yield_per_acre || '';
+  document.getElementById('eco-unit').value = eco.yield_unit || 'quintal';
+  document.getElementById('eco-price').value = eco.price_per_unit || '';
+  document.getElementById('eco-revenue').value = eco.revenue_per_acre || '';
+  document.getElementById('eco-profit').value = eco.profit_per_acre || '';
+  document.getElementById('eco-source').value = eco.source || '';
+
+  document.getElementById('cropModal').classList.add('open');
+  switchTab('basic');
+}
+
+function clearCropForm() {
+  ['cropKey','cropName','cropHindi','cropDescEn','cropDescHi','cropDuration','cropTemp','cropWater','eco-cost','eco-yield','eco-price','eco-revenue','eco-profit','eco-source'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('cropDurationUnitEn') && (document.getElementById('cropDurationUnitEn').value = '');
+  document.getElementById('cropDurationValue').value = '';
+  document.getElementById('cropDurationUnit').value = 'days';
+  document.getElementById('eco-unit').value = 'quintal';
+  // Reset icon upload
+  document.getElementById('cropIconUrl').value = '';
+  document.getElementById('iconFileInput').value = '';
+  document.getElementById('iconPreview').style.display = 'none';
+  document.getElementById('iconPlaceholder').style.display = 'block';
+  document.getElementById('iconUploadText').textContent = 'Click to upload crop image (JPG, PNG, WebP, GIF)';
+  document.getElementById('seasonsList').innerHTML = '';
+  document.getElementById('stagesList').innerHTML = '';
+  document.getElementById('guideList').innerHTML = '';
+  document.getElementById('diseaseFormList').innerHTML = '';
+  // Reset healthy crop
+  ['healthy-appearance','healthy-leaf-color','healthy-root','healthy-size','healthy-quality','healthy-tips'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  // Reset disease sub-tab to diseases
+  switchDiseaseSubTab('diseases', null);
+}
+
+function closeCropModal() {
+  document.getElementById('cropModal').classList.remove('open');
+  clearCropForm();
+}
+
+// Tabs
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// Disease sub-tabs (Diseases / Healthy Crop)
+function switchDiseaseSubTab(name, btn) {
+  document.getElementById('dtab-diseases').style.display = name === 'diseases' ? 'block' : 'none';
+  document.getElementById('dtab-healthy').style.display = name === 'healthy' ? 'block' : 'none';
+  document.getElementById('dtab-btn-diseases').classList.toggle('active', name === 'diseases');
+  document.getElementById('dtab-btn-healthy').classList.toggle('active', name === 'healthy');
+}
+
+// Duration unit converter
+function updateDurationDays() {
+  const val = parseFloat(document.getElementById('cropDurationValue').value) || 0;
+  const unit = document.getElementById('cropDurationUnit').value;
+  const multipliers = { days: 1, weeks: 7, months: 30, years: 365 };
+  const days = Math.round(val * (multipliers[unit] || 1));
+  document.getElementById('cropDuration').value = days > 0 ? days : '';
+}
+
+// Seasons
+function addSeason(val='') {
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:8px;align-items:center';
+  div.innerHTML = `<input type="text" value="${val}" placeholder="e.g., Rabi (Oct–Mar)" style="flex:1">
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:1.1rem;padding:0 4px">×</button>`;
+  document.getElementById('seasonsList').appendChild(div);
+}
+
+// Stages
+function addStage(data={}) {
+  const div = document.createElement('div');
+  div.className = 'repeater-item';
+  div.innerHTML = `<button class="rm-btn" onclick="this.parentElement.remove()">✕</button>
+    <div class="form-row-3">
+      <div class="form-group"><label>Stage Name</label><input type="text" class="st-name" value="${data.name||''}" placeholder="e.g., Germination"></div>
+      <div class="form-group"><label>Start Day</label><input type="number" class="st-start" value="${data.day_start||''}" placeholder="0" min="0"></div>
+      <div class="form-group"><label>End Day</label><input type="number" class="st-end" value="${data.day_end||''}" placeholder="10" min="0"></div>
+    </div>`;
+  document.getElementById('stagesList').appendChild(div);
+}
+
+// Guide tasks
+function addGuideTask(data={}) {
+  const div = document.createElement('div');
+  div.className = 'repeater-item';
+  div.innerHTML = `<button class="rm-btn" onclick="this.parentElement.remove()">✕</button>
+    <div class="form-row">
+      <div class="form-group"><label>Day</label><input type="number" class="gt-day" value="${data.day||''}" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Type</label><select class="gt-type">
+        ${TASK_TYPES.map(t=>`<option value="${t}" ${data.type===t?'selected':''}>${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="form-group"><label>Title</label><input type="text" class="gt-title" value="${data.title||''}" placeholder="e.g., Sowing Day"></div>
+    <div class="form-group"><label>Description</label><textarea class="gt-desc" placeholder="Detailed instructions for the farmer...">${data.desc||''}</textarea></div>
+    <div class="form-group"><label>Reference (optional)</label><input type="text" class="gt-ref" value="${data.ref||''}" placeholder="e.g., ICAR"></div>`;
+  document.getElementById('guideList').appendChild(div);
+}
+
+// Disease entries
+function addDiseaseEntry(data={}) {
+  const div = document.createElement('div');
+  div.className = 'repeater-item';
+  div.innerHTML = `<button class="rm-btn" onclick="this.parentElement.remove()">✕</button>
+    <div class="form-group"><label>Disease Name *</label><input type="text" class="de-name" value="${data.name||''}" placeholder="e.g., Late Blight"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Caused By</label><input type="text" class="de-cause" value="${data.caused_by||''}" placeholder="e.g., Phytophthora infestans (fungus)"></div>
+      <div class="form-group"><label>Favorable Conditions</label><input type="text" class="de-conditions" value="${data.conditions||''}" placeholder="e.g., Cool humid weather"></div>
+    </div>
+    <div class="form-group"><label>Symptoms</label><textarea class="de-symptoms" placeholder="Describe visible symptoms...">${data.symptoms||''}</textarea></div>
+    <div class="form-group"><label>Precautions / Prevention</label><textarea class="de-prevention" placeholder="Preventive measures, cultural practices...">${data.prevention||''}</textarea></div>
+    <div class="form-group"><label>Treatment Steps (one per line)</label><textarea class="de-treatment" placeholder="Line 1: Apply Mancozeb 2g/L&#10;Line 2: Remove infected plant parts">${(data.treatment||[]).join('\n')}</textarea></div>
+    <div class="form-group"><label>Fertilizer Advice (optional)</label><input type="text" class="de-fert" value="${data.fertilizer||''}" placeholder="e.g., Apply balanced NPK to strengthen plant"></div>`;
+  document.getElementById('diseaseFormList').appendChild(div);
+}
+
+// Economics
+function calcEconomics() {
+  const yld = parseFloat(document.getElementById('eco-yield').value) || 0;
+  const price = parseFloat(document.getElementById('eco-price').value) || 0;
+  const cost = parseFloat(document.getElementById('eco-cost').value) || 0;
+  const rev = yld * price;
+  const profit = rev - cost;
+  document.getElementById('eco-revenue').value = rev;
+  document.getElementById('eco-profit').value = profit;
+}
+
+// Icon upload (removed - now using emoji instead)
+// async function handleIconUpload(input) { ... }
+
+// Save crop
+async function saveCrop() {
+  const key = editingKey || document.getElementById('cropKey').value.trim();
+  const name = document.getElementById('cropName').value.trim();
+  if (!key || !name) { toast('Crop key and name are required', true); return; }
+
+  // Seasons
+  const seasons = [...document.querySelectorAll('#seasonsList input')].map(i => i.value.trim()).filter(Boolean);
+  // Stages
+  const stages = [...document.querySelectorAll('#stagesList .repeater-item')].map(el => ({
+    name: el.querySelector('.st-name').value.trim(),
+    day_start: parseInt(el.querySelector('.st-start').value) || 0,
+    day_end: parseInt(el.querySelector('.st-end').value) || 0,
+  })).filter(s => s.name);
+  // Guide
+  const guide = [...document.querySelectorAll('#guideList .repeater-item')].map(el => ({
+    day: parseInt(el.querySelector('.gt-day').value) || 0,
+    type: el.querySelector('.gt-type').value,
+    title: el.querySelector('.gt-title').value.trim(),
+    desc: el.querySelector('.gt-desc').value.trim(),
+    ref: el.querySelector('.gt-ref').value.trim(),
+  })).filter(g => g.title);
+  // Diseases
+  const disease_info = {};
+  [...document.querySelectorAll('#diseaseFormList .repeater-item')].forEach(el => {
+    const dname = el.querySelector('.de-name').value.trim();
+    if (!dname) return;
+    const treatRaw = el.querySelector('.de-treatment').value.trim();
+    disease_info[dname] = {
+      caused_by: el.querySelector('.de-cause').value.trim(),
+      conditions: el.querySelector('.de-conditions').value.trim(),
+      symptoms: el.querySelector('.de-symptoms').value.trim(),
+      prevention: el.querySelector('.de-prevention').value.trim(),
+      treatment: treatRaw ? treatRaw.split('\n').map(t=>t.trim()).filter(Boolean) : [],
+      fertilizer: el.querySelector('.de-fert').value.trim(),
+    };
+  });
+
+  const eco = {
+    cost_per_acre: parseFloat(document.getElementById('eco-cost').value) || 0,
+    yield_per_acre: parseFloat(document.getElementById('eco-yield').value) || 0,
+    yield_unit: document.getElementById('eco-unit').value,
+    price_per_unit: parseFloat(document.getElementById('eco-price').value) || 0,
+    revenue_per_acre: parseFloat(document.getElementById('eco-revenue').value) || 0,
+    profit_per_acre: parseFloat(document.getElementById('eco-profit').value) || 0,
+    source: document.getElementById('eco-source').value.trim(),
+  };
+
+  const payload = {
+    key,
+    name,
+    hindi: document.getElementById('cropHindi').value.trim(),
+    desc_en: document.getElementById('cropDescEn').value.trim(),
+    desc_hi: document.getElementById('cropDescHi').value.trim(),
+    duration_days: parseInt(document.getElementById('cropDuration').value) || 120,
+    duration_value: parseFloat(document.getElementById('cropDurationValue').value) || null,
+    duration_unit: document.getElementById('cropDurationUnit').value || 'days',
+    ideal_temp: document.getElementById('cropTemp').value.trim(),
+    water_need: document.getElementById('cropWater').value.trim(),
+    icon_url: document.getElementById('cropIconUrl').value.trim(),
+    seasons, stages, guide, disease_info,
+    diseases: Object.keys(disease_info),
+    healthy_crop: {
+      appearance: document.getElementById('healthy-appearance').value.trim(),
+      leaf_color: document.getElementById('healthy-leaf-color').value.trim(),
+      root: document.getElementById('healthy-root').value.trim(),
+      size: document.getElementById('healthy-size').value.trim(),
+      quality: document.getElementById('healthy-quality').value.trim(),
+      tips: document.getElementById('healthy-tips').value.trim(),
+    },
+    economics: eco,
+  };
+
+  try {
+    const r = await fetch('/admin/api/crops/save', {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if (d.success) {
+      toast(editingKey ? 'Crop updated!' : 'Crop added!');
+      closeCropModal();
+      loadCrops();
+    } else {
+      toast(d.error || 'Save failed', true);
+    }
+  } catch(e) { toast('Save error: ' + e.message, true); }
+}
+
+async function deleteCrop(key) {
+  if (!confirm(`Delete crop "${allCrops[key]?.name || key}"? This cannot be undone.`)) return;
+  const r = await fetch('/admin/api/crops/delete', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({key})
+  });
+  const d = await r.json();
+  if (d.success) { toast('Crop deleted'); loadCrops(); }
+  else toast(d.error || 'Delete failed', true);
+}
+
+// ─── Diseases ────────────────────────────────────────────────
+async function loadDiseases() {
+  if (Object.keys(allCrops).length === 0) await loadCrops();
+  const container = document.getElementById('diseasesList');
+  const entries = [];
+  Object.keys(allCrops).forEach(key => {
+    const c = allCrops[key];
+    const di = c.disease_info || {};
+    Object.keys(di).forEach(dname => {
+      entries.push({crop: c.name, cropKey: key, disease: dname, info: di[dname]});
+    });
+  });
+  if (!entries.length) {
+    container.innerHTML = '<div class="empty-state"><p>No disease information added yet. Add diseases within crop entries.</p><button class="btn btn-primary" onclick="showSection(\'crops\')">Go to Crop Library</button></div>';
+    return;
+  }
+  container.innerHTML = entries.map(e => `
+    <div style="background:white;border-radius:var(--r);border:1px solid var(--bd);padding:18px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+        <div>
+          <div style="font-size:0.72rem;color:var(--light);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">${e.crop}</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--dark)">${e.disease}</div>
+          ${e.info.caused_by ? `<div style="font-size:0.8rem;color:var(--light);margin-top:3px">Caused by: ${e.info.caused_by}</div>` : ''}
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="showSection('crops');setTimeout(()=>editCrop('${e.cropKey}'),300)">Edit</button>
+      </div>
+      ${e.info.symptoms ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bd)"><strong style="font-size:0.78rem;color:var(--mid)">Symptoms:</strong> <span style="font-size:0.82rem;color:var(--light)">${e.info.symptoms}</span></div>` : ''}
+      ${e.info.prevention ? `<div style="margin-top:6px"><strong style="font-size:0.78rem;color:var(--mid)">Prevention:</strong> <span style="font-size:0.82rem;color:var(--light)">${e.info.prevention}</span></div>` : ''}
+      ${(e.info.treatment||[]).length ? `<div style="margin-top:6px"><strong style="font-size:0.78rem;color:var(--mid)">Treatment:</strong> <ul style="margin:4px 0 0 16px;font-size:0.82rem;color:var(--light)">${e.info.treatment.map(t=>`<li>${t}</li>`).join('')}</ul></div>` : ''}
+    </div>`).join('');
+}
+
+// ─── Forum ───────────────────────────────────────────────────
+async function loadPosts() {
+  const tbody = document.querySelector('#postsTable tbody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--light)">Loading posts...</td></tr>';
+  try {
+    const r = await fetch(`${API}/posts`);
+    const d = await r.json();
+    const posts = d.posts || [];
+    document.getElementById('forumCount').textContent = posts.length + ' posts total';
+    if (!posts.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--light)">No forum posts yet. Posts made by farmers will appear here.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = posts.map(p => `
+    <tr>
+      <td><strong style="font-size:0.83rem">${p.title || '—'}</strong></td>
+      <td style="color:var(--light)">${p.author_name || '—'}</td>
+      <td><span class="tag">${p.tag || 'general'}</span></td>
+      <td>${p.vote_count || 0}</td>
+      <td>${p.answer_count || 0}</td>
+      <td style="color:var(--light);font-size:0.78rem">${p.created_at ? new Date(p.created_at).toLocaleDateString() : '—'}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deletePost('${p.id}')">Delete</button></td>
+    </tr>`).join('');
+  } catch(err) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#c0392b">Failed to load posts. Check the /admin/api/posts endpoint.</td></tr>';
+  }
+}
+
+async function deletePost(id) {
+  if (!confirm('Delete this post?')) return;
+  const r = await fetch('/admin/api/posts/delete', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({post_id: id})
+  });
+  const d = await r.json();
+  if (d.success) { toast('Post deleted'); loadPosts(); }
+  else toast(d.error || 'Failed', true);
+}
+
+// ─── Users ───────────────────────────────────────────────────
+async function loadUsers() {
+  const r = await fetch(`${API}/users`);
+  const d = await r.json();
+  allUsers = d.users || [];
+  renderUsersTable(allUsers);
+}
+
+function filterUsers() {
+  const q = document.getElementById('userSearch').value.toLowerCase();
+  renderUsersTable(allUsers.filter(u =>
+    (u.full_name||'').toLowerCase().includes(q) ||
+    (u.email||'').toLowerCase().includes(q) ||
+    (u.location||'').toLowerCase().includes(q)
+  ));
+}
+
+function renderUsersTable(users) {
+  const tbody = document.querySelector('#usersTable tbody');
+  tbody.innerHTML = users.map(u => {
+    const status = u.status || 'active';
+    const badgeClass = status === 'blocked' ? 'badge-blocked' : status === 'suspended' ? 'badge-suspended' : 'badge-active';
+    return `<tr>
+      <td><strong>${u.full_name || '—'}</strong></td>
+      <td style="color:var(--light);font-size:0.82rem">${u.email || '—'}</td>
+      <td>${u.location || '—'}</td>
+      <td><span class="status-badge ${badgeClass}">${status}</span></td>
+      <td style="color:var(--light);font-size:0.78rem">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
+      <td>
+        ${status !== 'blocked' 
+          ? `<button class="btn btn-danger btn-sm" onclick="setUserStatus('${u.user_id}','blocked')">Block</button>` 
+          : `<button class="btn btn-secondary btn-sm" onclick="setUserStatus('${u.user_id}','active')">Unblock</button>`}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function setUserStatus(userId, status) {
+  const r = await fetch('/admin/api/users/status', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({user_id: userId, status})
+  });
+  const d = await r.json();
+  if (d.success) { toast('User status updated'); loadUsers(); }
+  else toast(d.error || 'Failed', true);
+}
+
+// ─── Mobile Sidebar ──────────────────────────────────────────
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const btn = document.getElementById('hamburgerBtn');
+  const isOpen = sidebar.classList.toggle('open');
+  overlay.classList.toggle('open', isOpen);
+  btn.classList.toggle('open', isOpen);
+}
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  document.getElementById('hamburgerBtn').classList.remove('open');
+}
+
+// ─── Config ──────────────────────────────────────────────────
+async function loadConfig() {
+  const r = await fetch(`${API}/config`);
+  const d = await r.json();
+  const cats = d.expense_categories || [];
+  const list = document.getElementById('expCatList');
+  list.innerHTML = cats.map(c => `
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="text" value="${c}" style="flex:1">
+      <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:1.1rem">×</button>
+    </div>`).join('');
+}
+
+function addExpCategory() {
+  const list = document.getElementById('expCatList');
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:8px;align-items:center';
+  div.innerHTML = `<input type="text" placeholder="e.g., Insurance" style="flex:1">
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:1.1rem">×</button>`;
+  list.appendChild(div);
+}
+
+async function saveConfig() {
+  const cats = [...document.querySelectorAll('#expCatList input')].map(i => i.value.trim()).filter(Boolean);
+  const r = await fetch('/admin/api/config/save', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({expense_categories: cats})
+  });
+  const d = await r.json();
+  if (d.success) toast('Settings saved!');
+  else toast(d.error || 'Failed', true);
+}
+
+// ─── Card Icons ──────────────────────────────────────────────
+
+const CARD_META = {
+  disease:      { label: 'Disease Scan',     emoji: '🔬' },
+  weather:      { label: 'Weather',          emoji: '🌤' },
+  mandi:        { label: 'Mandi Prices',     emoji: '🌾' },
+  recommend:    { label: 'Crop Recommend',   emoji: '🧪' },
+  library:      { label: 'Library',          emoji: '📚' },
+  chat:         { label: 'AI Chat',          emoji: '🤖' },
+  farmer_point: { label: 'Farmer Point',     emoji: '💬' },
+  marketplace:  { label: 'Marketplace',      emoji: '🛒' },
+  schemes:      { label: 'Gov Schemes',      emoji: '📋' },
+};
+
+let currentCardIcons = {};
+
+async function setupStorage() {
+  const btns = [document.getElementById('setupStorageBtn'), document.getElementById('setupStorageBtnCrops')];
+  btns.forEach(b => { if(b) { b.disabled = true; b.textContent = '⏳ Setting up…'; }});
+  try {
+    const r = await fetch('/admin/api/storage/setup', { method: 'POST' });
+    const d = await r.json();
+    if (d.success) {
+      btns.forEach(b => { if(b) { b.textContent = '✅ Storage Ready'; }});
+      toast('Supabase Storage bucket ready! You can now upload images.');
+    } else {
+      btns.forEach(b => { if(b) { b.disabled = false; b.textContent = '⚙ Setup Storage'; }});
+      toast('Setup failed: ' + (d.error || 'Unknown error'), true);
+    }
+  } catch(e) {
+    btns.forEach(b => { if(b) { b.disabled = false; b.textContent = '⚙ Setup Storage'; }});
+    toast('Setup error: ' + e.message, true);
+  }
+}
+
+async function loadCardIcons() {
+  const grid = document.getElementById('cardIconsGrid');
+  grid.innerHTML = '<p style="color:var(--light);font-size:0.85rem">Loading…</p>';
+  try {
+    const r = await fetch(`${API}/card-icons`);
+    const d = await r.json();
+    currentCardIcons = d.icons || {};
+    renderCardIconsGrid();
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--red)">Failed to load card icons.</p>';
+  }
+}
+
+function renderCardIconsGrid() {
+  const grid = document.getElementById('cardIconsGrid');
+  grid.innerHTML = Object.entries(CARD_META).map(([id, meta]) => {
+    const url = currentCardIcons[id] || '';
+    const imgHtml = url
+      ? `<img src="${url}" alt="${meta.label}" style="width:64px;height:64px;object-fit:cover;border-radius:12px;margin-bottom:8px">`
+      : `<div style="width:64px;height:64px;border-radius:12px;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:8px">${meta.emoji}</div>`;
+    return `
+      <div style="background:white;border:1px solid var(--bd);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px">
+        ${imgHtml}
+        <div style="font-weight:600;font-size:0.9rem">${meta.label}</div>
+        <div style="font-size:0.72rem;color:var(--light);margin-bottom:8px">${url ? 'Custom icon active' : 'Using default emoji'}</div>
+        <label style="cursor:pointer;background:var(--leaf);color:white;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:500">
+          ${url ? 'Change' : 'Upload'}
+          <input type="file" accept="image/*" style="display:none" onchange="uploadCardIcon('${id}', this)">
+        </label>
+        ${url ? `<button onclick="deleteCardIcon('${id}')" style="background:none;border:1px solid var(--bd);color:var(--light);padding:5px 12px;border-radius:8px;cursor:pointer;font-size:0.78rem;margin-top:2px">Remove</button>` : ''}
+      </div>`;
+  }).join('');
+}
+
+async function uploadCardIcon(cardId, input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (file.size > 5 * 1024 * 1024) { toast('File must be under 5MB', true); return; }
+  const formData = new FormData();
+  formData.append('icon', file);
+  formData.append('card_id', cardId);
+  toast('Uploading…');
+  try {
+    const r = await fetch('/admin/api/card-icons/upload', { method: 'POST', body: formData });
+    const d = await r.json();
+    if (d.success) {
+      currentCardIcons[cardId] = d.url;
+      renderCardIconsGrid();
+      toast(`${CARD_META[cardId]?.label || cardId} icon updated!`);
+    } else {
+      toast(d.error || 'Upload failed', true);
+    }
+  } catch(e) {
+    toast('Upload error: ' + e.message, true);
+  }
+}
+
+async function deleteCardIcon(cardId) {
+  if (!confirm(`Remove custom icon for "${CARD_META[cardId]?.label}"? It will revert to the default emoji.`)) return;
+  try {
+    const r = await fetch('/admin/api/card-icons/delete', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ card_id: cardId })
+    });
+    const d = await r.json();
+    if (d.success) {
+      delete currentCardIcons[cardId];
+      renderCardIconsGrid();
+      toast('Icon removed — default emoji restored.');
+    } else {
+      toast(d.error || 'Delete failed', true);
+    }
+  } catch(e) {
+    toast('Error: ' + e.message, true);
+  }
+}
+
+// ─── Init ────────────────────────────────────────────────────
+// loadStats() is called by onAuthStateChanged above after successful login.
+</script>
+</body>
+</html>

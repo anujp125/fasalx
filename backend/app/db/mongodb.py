@@ -17,6 +17,9 @@ async def init_mongo():
         # Verify connection
         await db_instance.client.admin.command('ping')
         logger.info("Connected to MongoDB successfully.")
+        # Ensure all collections and indexes exist
+        from app.db.init_collections import init_collections
+        await init_collections(db_instance.db)
     except Exception as e:
         logger.error(f"Failed to connect to MongoDB: {e}")
 

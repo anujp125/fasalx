@@ -1,15 +1,17 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.core.config import settings
 from app.core.firebase import init_firebase
 from app.db.redis import init_redis, close_redis
 from app.db.mongodb import init_mongo, close_mongo
-from app.api.routers import admin_auth, agronomy, chatbot, dashboard_visibility, disease, fields, geo, system_config, telemetry, users
+from app.api.routers import admin_auth, agronomy, chatbot, dashboard_visibility, disease, fields, geo, system_config, telemetry, users, admin_panel, schemes
 from app.core.exceptions import AppError
 from app.core.docs import install_local_docs
 import logging
+import pathlib
 
 # Setup basic logging
 logging.basicConfig(level=logging.INFO)
@@ -57,6 +59,24 @@ app.include_router(geo.router, prefix=f"{settings.API_V1_STR}/geo", tags=["Geo"]
 app.include_router(fields.router, prefix=f"{settings.API_V1_STR}/fields", tags=["Fields"])
 app.include_router(dashboard_visibility.router, prefix=f"{settings.API_V1_STR}", tags=["Dashboard Visibility"])
 app.include_router(system_config.router, prefix=f"{settings.API_V1_STR}", tags=["System Config"])
+# Admin panel — all dashboard management endpoints
+app.include_router(admin_panel.router, prefix=f"{settings.API_V1_STR}/admin/api", tags=["Admin Panel"])
+app.include_router(schemes.router, prefix=f"{settings.API_V1_STR}/schemes", tags=["Schemes"])
+# ── Static files for image uploads ───────────────────────────────────────────
+_upload_dir = pathlib.Path("static/uploads")
+_upload_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# ── Serve admin dashboard HTML ────────────────────────────────────────────────
+_admin_html = pathlib.Path("frontend_admin/admin_dash.html")
+
+@app.get("/admin", include_in_schema=False)
+@app.get("/admin/", include_in_schema=False)
+async def serve_admin_dashboard():
+    """Serve the admin dashboard single-page application."""
+    if _admin_html.exists():
+        return FileResponse(str(_admin_html))
+    return JSONResponse({"error": "Admin dashboard not found"}, status_code=404)
 
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):
